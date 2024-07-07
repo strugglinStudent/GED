@@ -1,0 +1,42 @@
+<div class="z-1 w-screen absolute">
+  <mat-toolbar color="primary" class="relative z-1 w-screen flex items-center">
+    <div class="flex items-center">
+      <button mat-icon-button (click)="snav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      {{ user?.companyName }}
+    </div>
+    <div class="flex-1 flex"></div>
+
+    <div class="flex items-center">
+      <div class="flex-1 flex justify-center">
+        <app-search [appearance]="'bar'"></app-search>
+      </div>
+      <div class="flex flex-col text-right mr-4">
+        <div
+          class="whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current opacity-80"
+        >
+          {{ user?.userName }}
+        </div>
+        <div
+          class="mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50"
+        >
+          {{ user?.role }}
+        </div>
+      </div>
+      <app-user-settings></app-user-settings>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="w-fit">
+    <mat-sidenav #snav [mode]="'over'" role="navigation">
+      <mat-nav-list>
+        <app-side-nav (itemClicked)="snav.close()"></app-side-nav>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="overflow-auto w-fit flex flex-col flex-auto">
+      <!-- Content -->
+      <router-outlet *ngIf="true"></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

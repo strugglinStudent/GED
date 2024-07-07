@@ -1,0 +1,10 @@
+@import './assets/styles/base';
+@import './assets/styles/helpers';
+@import './assets/styles/splash-screen';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "./assets/fonts/brush-king/brushKing.css";
+.cdk-overlay-container {
+  z-index: 500 !important;
+}

@@ -1,0 +1,76 @@
+<div class="m-6" *ngIf="data.type === 'delete'">
+  <h2 mat-dialog-title>Confirm Deletion</h2>
+  <p>Are you sure you want to delete this company?</p>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">No</button>
+    <button
+      mat-button
+      class="bg-blue-900 text-white focus:ring-2"
+      (click)="onDelete()"
+      cdkFocusInitial
+    >
+      Yes
+    </button>
+  </mat-dialog-actions>
+</div>
+<div class="m-4" *ngIf="data.type !== 'delete'">
+  <h2 class="flex items-center justify-center mat-dialog-title">
+    {{ data.type === 'edit' ? 'Edit Company' : 'Add New Company' }}
+  </h2>
+
+  <div class="flex flex-col mat-dialog-content">
+    <form [formGroup]="companyForm" class="flex flex-col">
+      <div class="flex flex-row mb-4">
+        <mat-form-field class="w-full mr-4">
+          <mat-label>Company Name</mat-label>
+          <input matInput placeholder="Company Name" formControlName="name" required />
+          <mat-error *ngIf="companyForm.controls.name.invalid && companyForm.controls.name.touched">
+            <span *ngIf="companyForm.controls.name.errors.required">Company Name is required.</span>
+            <span *ngIf="companyForm.controls.name.errors.minlength">
+              Company Name must be at least 3 characters long.
+            </span>
+            <span *ngIf="companyForm.controls.name.errors.pattern">
+              Company Name cannot contain whitespace.
+            </span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-row mb-4">
+        <mat-form-field class="w-full mr-4">
+          <mat-label>Address</mat-label>
+          <input matInput placeholder="Address" formControlName="address" required />
+          <mat-error
+            *ngIf="companyForm.controls.address.invalid && companyForm.controls.address.touched"
+          >
+            <span *ngIf="companyForm.controls.address.errors.required">Address is required.</span>
+            <span *ngIf="companyForm.controls.address.errors.minlength">
+              Address must be at least 3 characters long.
+            </span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" placeholder="Email" formControlName="email" required />
+          <mat-error
+            *ngIf="companyForm.controls.email.invalid && companyForm.controls.email.touched"
+          >
+            <span *ngIf="companyForm.controls.email.errors.required">Email is required.</span>
+            <span *ngIf="companyForm.controls.email.errors.email">Enter a valid email.</span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <div class="flex justify-end mat-dialog-actions">
+    <button mat-button (click)="closeDialog()" class="mr-2">Cancel</button>
+    <button
+      mat-raised-button
+      class="bg-blue-900"
+      [disabled]="!companyForm.valid"
+      (click)="saveCompany()"
+    >
+      {{ data.type === 'edit' ? 'Update' : 'Save' }}
+    </button>
+  </div>
+</div>

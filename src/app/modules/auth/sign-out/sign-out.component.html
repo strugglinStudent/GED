@@ -1,0 +1,26 @@
+<div
+  class="flex flex-col flex-auto items-center sm:justify-center min-w-0 w-full min-h-screen bg-slate-50 text-blue-700 md:shadow-lg rounded-lg"
+>
+  <div class="w-full sm:w-auto py-8 px-4 sm:p-12">
+    <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+      <!-- Logo -->
+      <div class="w-12 mx-auto">
+        <img src="assets/images/logo/logo.png" alt="logo" />
+      </div>
+
+      <!-- Title -->
+      <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight text-center">
+        You have signed out!
+      </div>
+      <div class="flex justify-center mt-0.5 font-medium">
+        <!-- Redirect countdown -->
+        <ng-container *ngIf="countdown > 0">
+          Redirecting in {{ countdown | i18nPlural: countdownMapping }}
+        </ng-container>
+        <mat-progress-spinner></mat-progress-spinner>
+        <!-- Redirect message -->
+        <ng-container *ngIf="countdown === 0"> You are now being redirected! </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

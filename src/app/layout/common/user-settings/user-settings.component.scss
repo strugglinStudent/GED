@@ -1,0 +1,41 @@
+.w-screen {
+  width: 100vw;
+}
+
+.relative {
+  position: relative;
+}
+
+.z-1 {
+  z-index: 1;
+}
+
+.ml-2 {
+  margin-left: 0.5rem; /* Adjust as needed */
+}
+
+.mr-4 {
+  margin-right: 1rem; /* Adjust as needed */
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

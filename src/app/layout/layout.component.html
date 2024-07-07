@@ -1,0 +1,10 @@
+<!-- sign-in -->
+<app-sign-in-layout *ngIf="layout === 'sign-in'"></app-sign-in-layout>
+
+<!-- application -->
+<app-application-layout *ngIf="layout === 'application'"></app-application-layout>
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- Empty layout -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<app-empty-layout *ngIf="layout === 'empty'"></app-empty-layout>
+<app-settings *ngIf="!['PROD', 'VALID'].includes(environment.env)"></app-settings>

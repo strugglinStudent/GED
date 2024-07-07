@@ -1,0 +1,113 @@
+{
+  "name": "ged-nova-angular",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "start:mobile": "ng serve --host 0.0.0.0 --disable-host-check",
+    "android": "npx cap open android",
+    "ios": "npx cap open ios",
+    "build": "ng build",
+    "test": "ng test",
+    "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI || exit 1",
+    "install:ci": "npm ci --cache .npm --prefer-offline --ignore-scripts --no-audit --no-progress",
+    "lint": "npm run lint:eslint",
+    "lint:fix": "ng lint --fix",
+    "lint:eslint": "ng lint",
+    "e2e": "ng e2e",
+    "change-log": "nodemon deploy/change-log.js 1.1.0",
+    "release": "npm run release:minor",
+    "release:minor": "npm version minor --no-git-tag-version",
+    "release:patch": "npm version patch --no-git-tag-version",
+    "release:major": "npm version major --no-git-tag-version",
+    "validate-branch": "validate-branch-name",
+    "commit-message-validator": "commit-message-validator",
+    "prepare": "husky install",
+    "i18n:extract": "transloco-keys-manager extract --langs en-US fr-FR de-DE es-ES it-IT --default-value \"{{key}}\"",
+    "i18n:find": "transloco-keys-manager find"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged --relative"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "npm run lint"
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^17.3.5",
+    "@angular/cdk": "^17.3.5",
+    "@angular/common": "^17.3.5",
+    "@angular/compiler": "^17.3.5",
+    "@angular/core": "^17.3.5",
+    "@angular/forms": "^17.3.5",
+    "@angular/material": "^17.3.5",
+    "@angular/platform-browser": "^17.3.5",
+    "@angular/platform-browser-dynamic": "^17.3.5",
+    "@angular/router": "^17.3.5",
+    "@ngx-translate/core": "^15.0.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "jwt-decode": "^4.0.0",
+    "lodash-es": "^4.17.21",
+    "ngx-material-timepicker": "^13.1.1",
+    "ngx-scanner-qrcode": "^1.6.9",
+    "perfect-scrollbar": "^1.5.5",
+    "rxjs": "^7.8.1",
+    "xng-breadcrumb": "^11.0.0",
+    "zone.js": "^0.14.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.5",
+    "@angular-eslint/builder": "^17.3.0",
+    "@angular-eslint/eslint-plugin": "^17.3.0",
+    "@angular-eslint/eslint-plugin-template": "^17.3.0",
+    "@angular-eslint/schematics": "^17.3.0",
+    "@angular-eslint/template-parser": "^17.3.0",
+    "@angular/cli": "^17.3.5",
+    "@angular/compiler-cli": "^17.3.5",
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.0.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.12",
+    "@types/chroma-js": "^2.4.4",
+    "@types/highlight.js": "^10.1.0",
+    "@types/jasmine": "~5.1.4",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "chroma-js": "^2.4.2",
+    "codelyzer": "^0.0.28",
+    "commit-message-validator": "^1.0.2",
+    "eslint": "^8.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.2.3",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^5.1.3",
+    "git-tags": "^0.2.4",
+    "husky": "^9.0.11",
+    "jasmine-core": "~5.1.2",
+    "jasmine-spec-reporter": "~7.0.0",
+    "karma": "~6.4.3",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.1",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "lint-staged": "^15.2.2",
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3",
+    "typescript": "5.4.5",
+    "validate-branch-name": "^1.3.0"
+  },
+  "config": {
+    "commit-message-validator": {
+      "pattern": "^((Revert \")?\\[(FEATURE|BUGFIX|DOCS|STYLE|REFACTO|TEST|QUALITY|CHORE|RELEASE)\\](\\[((INN|PAY|AUT|TMS|FAW|GED)-\\d+|CI SKIP)\\])? [A-Z]|Merge ((remote-tracking )?branch|commit) ).*",
+      "errorMessage": "Commit not good: please see https://tic-nova.atlassian.net/wiki/spaces/MML/pages/263061508/Workflow+Git+Flow"
+    }
+  }
+}

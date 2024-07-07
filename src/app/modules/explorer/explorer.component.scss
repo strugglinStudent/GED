@@ -1,0 +1,13 @@
+.body-container{
+  height: calc(100% - 12rem);
+  max-height: calc(100% - 12rem);
+  min-height: calc(100% - 12rem);
+}
+.header-container{
+  background: linear-gradient(180deg, #252A54 0%, #1C2045 100%);
+}
+.footer-container{
+  background: #1C2045;
+  box-shadow: 0 4px 44px rgba(0, 0, 0, 0.43);
+}
+

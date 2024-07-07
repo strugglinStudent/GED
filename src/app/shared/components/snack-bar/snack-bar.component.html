@@ -1,0 +1,20 @@
+<div class="snackbar-container">
+  <div>
+    <mat-icon *ngIf="data.type === 'primary'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'accent'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'warn'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'basic'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'info'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'success'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'warning'"></mat-icon>
+
+    <mat-icon *ngIf="data.type === 'error'"></mat-icon>
+  </div>
+  <span [ngClass]="data.type">{{ data.message }}</span>
+</div>

@@ -1,0 +1,56 @@
+.mobile-btn {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.market-btn {
+  display: inline-block;
+  padding: 0.3125rem 1.875rem 0.3125rem 3.8125rem;
+  -webkit-transition: border-color 0.25s ease-in-out, background-color 0.25s ease-in-out;
+  transition: border-color 0.25s ease-in-out, background-color 0.25s ease-in-out;
+  border: 1px solid #e7e7e7;
+  background-position: center left 1.25rem;
+  background-color: #fff;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  text-decoration: none;
+  margin: 0.3125rem;
+  border-radius: 99999px;
+}
+.market-btn .market-button-title {
+  display: block;
+  color: #222;
+  font-size: 1.5rem;
+}
+.market-btn .market-button-subtitle {
+  display: block;
+  margin-bottom: -0.25rem;
+  color: #888;
+  font-size: 1rem;
+}
+.market-btn:hover {
+  background-color: #f7f7f7;
+  text-decoration: none;
+}
+.apple-btn {
+  background-image: url('../../../../assets/images/icons/apple-white.svg');
+}
+.google-btn {
+  background-image: url('../../../../assets/images/icons/android.svg');
+}
+.apple-btn-dark {
+}
+.market-btn-light {
+  border-color: rgba(255, 255, 255, 0.14);
+  background-color: rgba(0, 0, 0, 0);
+}
+.market-btn-light .market-button-title {
+  color: #fff;
+}
+.market-btn-light .market-button-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+.market-btn-light:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+

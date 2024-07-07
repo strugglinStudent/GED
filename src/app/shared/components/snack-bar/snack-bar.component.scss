@@ -1,0 +1,51 @@
+.snackbar-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  span {
+    line-height: 20px;
+    margin-left: 50px;
+    text-align: left;
+  }
+  div {
+    flex-shrink: 0;
+    margin: -8px -8px -8px 8px;
+    button {
+      padding: 0;
+      min-width: 0;
+      width: 35px;
+      height: 35px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      mat-icon {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}
+/* Snackbar */
+simple-snack-bar {
+  justify-content: center !important;
+}
+
+.success {
+  color: green !important;
+}
+
+.error {
+  color: red !important;
+}
+
+.warning {
+  color: #DF8C32FF !important;
+}
+
+.info {
+  color: #DBEDF2FF !important;
+}

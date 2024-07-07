@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Brush";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  font-named-instance: 'Regular';
+  src: local("Brush"), url(./BrushKing.otf);
+}
+

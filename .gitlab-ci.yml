@@ -1,0 +1,491 @@
+stages:
+  - install-lint-build
+  - test
+  - release
+  - publish
+  - deploy
+  - subdomain
+  # Environments
+
+.dev: &dev
+  variables:
+    ENV: DEV
+    DOMAIN_ENV: dev
+    VAR_SERVER: $CI_SERVER_DEV
+    USER_SERVER: root
+    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_DEV
+    PROJECT_PATH: /var/www
+    PROJECT_NAME: ged-nova
+    PORT_API: 8190
+.valid: &valid
+  variables:
+    ENV: VALID
+    DOMAIN_ENV: valid
+    VAR_SERVER: $CI_SERVER_VALID
+    USER_SERVER: root
+    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_VALID
+    PROJECT_PATH: /var/www
+    PROJECT_NAME: ged-nova
+    PORT_API: 8191
+
+.prod: &prod
+  variables:
+    ENV: PROD
+    DOMAIN_ENV: prod
+    VAR_SERVER: $CI_SERVER_PROD
+    USER_SERVER: root
+    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_PROD
+    PROJECT_PATH: /var/www
+    PROJECT_NAME: ged-nova
+    PORT_API: 8192
+
+
+.prod_2: &prod_2
+  variables:
+    ENV: PROD
+    DOMAIN_ENV: prod
+    VAR_SERVER: $CI_SERVER_PROD_XL
+    USER_SERVER: root
+    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_PROD_XL
+    PROJECT_PATH: /var/www
+    PROJECT_NAME: ged-nova
+    PORT_API: 8192
+
+# Branches
+
+.develop: &develop
+  only:
+    - develop
+
+.branches: &branches
+  except:
+    - develop
+    - main
+
+.main: &main
+  only:
+    - main
+
+# Misc
+
+.manual: &manual
+  when: manual
+
+.version_branch: &version_branch
+  before_script:
+    - apk update && apk add git
+    - apk update && apk add jq
+    - VERSION=`cat ./package.json | jq -r .version`
+    - VERSION_TAG=${VERSION}.${CI_COMMIT_REF_SLUG}.SNAPSHOT
+    - NOW=$(date +%s)
+    - VERSION="$VERSION-$CI_COMMIT_REF_SLUG-SNAPSHOT.$NOW"
+    - echo ${VERSION_TAG} ${VERSION} ${NOW}
+
+.version_snapshot: &version_snapshot
+  before_script:
+    - apk update && apk add jq
+    - VERSION=`cat ./package.json | jq -r .version`
+    - VERSION_TAG=${VERSION}.SNAPSHOT
+    - NOW=$(date +%s)
+    - VERSION="$VERSION-SNAPSHOT.$NOW"
+    - echo ${VERSION_TAG} ${VERSION}
+
+.version:  &version
+  before_script:
+    - apk update && apk add jq
+    - VERSION_TAG=`cat ./package.json | jq -r .version`
+    - echo ${VERSION_TAG}
+
+# Tags
+.tags-xl: &tags-xl
+  tags:
+    - angular-prod-xl
+.tags-m: &tags-m
+  tags:
+    - angular-prod
+
+# Stages
+
+.install: &install
+  image: node:20.12-alpine
+  stage: install-lint-build
+  script:
+    - npm -v
+    - node -v
+    - if [ ! -d "node_modules" ]; then npm run install:ci; fi
+    - sed -i -e "s/RELEASE-APP-VERSION-CI/${VERSION_TAG}/g" ./src/environments/environment.prod.ts
+    - npm run lint
+    - npm run build
+    - echo "Done"
+  cache:
+    - key:
+        files:
+          - package-lock.json
+      paths:
+        - .npm/
+        - ./node_modules
+      policy: pull-push
+      when: on_success
+    - key: $CI_PIPELINE_ID$CI_COMMIT_REF_SLUG
+      paths:
+        - ./dist
+      policy: push
+      when: on_success
+#  after_script:
+#    - ls -a .npm/_cacache
+#    - ls -a .npm/_logs
+#    - ls -a ./node_modules
+#    - ls -a ./dist/$CI_PROJECT_NAME
+
+install_branches:
+  <<: *tags-xl
+  <<: *version_branch
+  <<: *install
+  <<: *branches
+
+install_develop:
+  <<: *tags-m
+  <<: *version_snapshot
+  <<: *install
+  <<: *develop
+
+install_main:
+  <<: *tags-m
+  <<: *version
+  <<: *install
+  <<: *main
+
+.test: &test
+  <<: *manual
+  image: node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
+  stage: test
+  script:
+    - if [ ! -d "node_modules" ]; then npm run install:ci; fi
+    - npm run test:ci
+    - echo "Done"
+  cache:
+    - key:
+        files:
+          - package-lock.json
+      paths:
+        - .npm/
+        - ./node_modules
+      policy: pull-push
+      when: on_success
+    - key: $CI_PIPELINE_ID$CI_COMMIT_REF_SLUG
+      paths:
+        - ./dist
+      policy: push
+      when: on_success
+
+test_branches:
+  <<: *tags-xl
+  <<: *test
+  <<: *branches
+
+test_develop:
+  <<: *tags-m
+  <<: *test
+  <<: *develop
+
+test_main:
+  <<: *tags-m
+  <<: *test
+  <<: *main
+
+# Release main
+release:
+  <<: *version
+  <<: *main
+  image: node:20.12-alpine
+  stage: release
+  script:
+    - mv package.json package-1.json
+    - mv package-lock.json package-lock-1.json
+    - npm i git-tags@0.2.4 --ignore-scripts --no-audit --no-progress
+    - rm -rf package.json
+    - rm -rf package-lock.json
+    - mv package-1.json package.json
+    - mv package-lock-1.json package-lock.json
+    - apk add --update git
+    - git config --global user.email "bbmouadh90@gmail.com"
+    - git config --global user.name "Ci Pipeline"
+    - git config --global push.followTags true
+    - git status
+    - node ./deploy/change-log.js ${VERSION_TAG}
+  cache: []
+
+# Package
+.main_package_gitlab: &main_package_gitlab
+  stage: publish
+  image: node:20.12-alpine
+  script:
+    - apk --update add curl bash
+    - npm --version
+    - sed -i -e "s/VERSION-CI/$VERSION_TAG/g" ./deploy/package.json
+    - sed -i -e "s/PROJECT-ID-CI/$CI_PROJECT_ID/g" ./deploy/package.json
+    - sed -i -e "s/PROJECT-ID-CI/$CI_PROJECT_ID/g" ./deploy/.npmrc
+    - sed -i -e "s/REGISTRY_PASSWORD-CI/$CI_REGISTRY_PASSWORD/g" ./deploy/.npmrc
+    - cp ./deploy/package.json ./dist/${CI_PROJECT_NAME}/browser
+    - cp ./deploy/.npmrc $HOME
+    - cd ./dist/${CI_PROJECT_NAME}/browser
+    - sed -i -e "s/VERSION-CI/$VERSION_TAG/g" ./assets/version.json
+    - rm ./*.map
+    - npm publish
+  cache:
+    key: $CI_PIPELINE_ID$CI_COMMIT_REF_SLUG
+    paths:
+      - ./dist
+    policy: pull
+
+# Package
+.package_gitlab: &package_gitlab
+  stage: publish
+  image: node:20.12-alpine
+  script:
+    - apk --update add curl bash
+    - npm --version
+    #- sed -i -e "s/VERSION-CI/$VERSION/g" ./deploy/delete-package.js
+    #- node ./deploy/delete-package.js
+    - sed -i -e "s/VERSION-CI/$VERSION/g" ./deploy/package.json
+    - sed -i -e "s/PROJECT-ID-CI/$CI_PROJECT_ID/g" ./deploy/package.json
+    - sed -i -e "s/PROJECT-ID-CI/$CI_PROJECT_ID/g" ./deploy/.npmrc
+    - sed -i -e "s/REGISTRY_PASSWORD-CI/$CI_REGISTRY_PASSWORD/g" ./deploy/.npmrc
+    - cp ./deploy/package.json ./dist/${CI_PROJECT_NAME}/browser
+    - cp ./deploy/.npmrc $HOME
+    - cd ./dist/${CI_PROJECT_NAME}/browser
+    - sed -i -e "s/VERSION-CI/$VERSION/g" ./assets/version.json
+    #- OLD_SNAPSHOT=npm view ${CI_PROJECT_NAME}@$VERSION_TAG || ''
+    #- sed -i -e "s/VERSION-CI/$OLD_SNAPSHOT/g" ./deploy/delete-package.js
+    #- node ./deploy/delete-package.js
+    - rm ./*.map
+    - npm publish --tag $VERSION_TAG
+  cache:
+    key: $CI_PIPELINE_ID$CI_COMMIT_REF_SLUG
+    paths:
+      - ./dist
+    policy: pull
+
+package_branches_gitlab:
+  <<: *tags-xl
+  <<: *version_branch
+  <<: *package_gitlab
+  <<: *branches
+  <<: *manual
+
+package_develop_gitlab:
+  <<: *tags-m
+  <<: *version_snapshot
+  <<: *package_gitlab
+  <<: *develop
+
+package_main_gitlab:
+  <<: *tags-m
+  <<: *version
+  <<: *main_package_gitlab
+  <<: *main
+
+# Deploy
+.deploy: &deploy
+  image: alpine:3.10
+  stage: deploy
+  script:
+    # Setup SSH deploy keys
+    - apk add --update coreutils curl bash
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - PRIVATE_KEY=`echo "$SSH_PRIVATE_KEY" | base64 --decode`
+    - echo "${PRIVATE_KEY}" | ssh-add -
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - echo $CI_COMMIT_BRANCH
+    - echo $VERSION_TAG
+    - echo $VAR_SERVER
+    - echo $USER_SERVER
+    - ssh $USER_SERVER@$VAR_SERVER "[ -d $PROJECT_NAME ] || mkdir $PROJECT_NAME"
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME && [ -d ${CI_PROJECT_NAME} ] || mkdir ${CI_PROJECT_NAME}"
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME/${CI_PROJECT_NAME} && [ -d $ENV ] || mkdir $ENV"
+    - ssh $USER_SERVER@$VAR_SERVER "cd ${PROJECT_PATH} && [ -d ${CI_PROJECT_NAME} ] || mkdir ${CI_PROJECT_NAME}"
+    - ssh $USER_SERVER@$VAR_SERVER "cd ${PROJECT_PATH}/${CI_PROJECT_NAME} && [ -d $ENV ] || mkdir $ENV"
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME/${CI_PROJECT_NAME}/$ENV &&  echo $'registry=https://gitlab.com/api/v4/projects/PROJECT-ID-CI/packages/npm/\n//gitlab.com/api/v4/projects/PROJECT-ID-CI/packages/npm/:_authToken=REGISTRY_PASSWORD-CI' > npmrc-temp"
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME/${CI_PROJECT_NAME}/$ENV && ls && rm .npmrc || true && cp npmrc-temp .npmrc && sed -i -e "s/PROJECT-ID-CI/$CI_PROJECT_ID/g" ./.npmrc && sed -i -e "s/REGISTRY_PASSWORD-CI/$ACCESS_TOKEN/g" ./.npmrc && cp ./.npmrc $HOME && rm -rf node_modules || true && npm i $CI_PROJECT_NAME@$VERSION_TAG && exit"
+    - now=$(date +%Y-%m-%dT%T) && echo $now
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME/${CI_PROJECT_NAME}/$ENV/node_modules/${CI_PROJECT_NAME} && mv ./assets/version.json ./ && sed -i -e "s/DATE-DEPLOY-CI/$now/g" ./version.json && exit"
+    - ssh $USER_SERVER@$VAR_SERVER "cd $PROJECT_NAME/${CI_PROJECT_NAME}/$ENV/node_modules/${CI_PROJECT_NAME} && rm -rf ${PROJECT_PATH}/${CI_PROJECT_NAME}/$ENV/* && cp -R ./* ${PROJECT_PATH}/${CI_PROJECT_NAME}/$ENV/ && exit"
+  cache: []
+  environment:
+    name: $ENV
+  except:
+    - schedules
+
+deploy_branches:
+  <<: *version_branch
+  <<: *dev
+  <<: *deploy
+  <<: *branches
+  <<: *manual
+
+deploy_develop:
+  <<: *version_snapshot
+  <<: *dev
+  <<: *deploy
+  <<: *develop
+
+deploy_valid:
+  <<: *version
+  <<: *valid
+  <<: *deploy
+  <<: *main
+  <<: *manual
+
+deploy_prod:
+  <<: *version
+  <<: *prod
+  <<: *deploy
+  <<: *main
+  <<: *manual
+
+
+deploy_prod_2:
+  <<: *version
+  <<: *prod_2
+  <<: *deploy
+  <<: *main
+  <<: *manual
+
+
+# subdomain
+.subdomain: &subdomain
+  image: node:20.12-alpine
+  stage: subdomain
+  script:
+    - rm -rf package.json
+    - rm -rf package-lock.json
+    - npm i ovh -d
+    - |
+      if [ $DOMAIN_ENV = 'prod' ]; then
+       SUB_DOMAIN=$PROJECT_NAME
+      else
+       SUB_DOMAIN=$PROJECT_NAME.$DOMAIN_ENV
+      fi
+    - echo $SUB_DOMAIN
+    - node ./deploy/ovh.js $SUB_DOMAIN
+    # Setup SSH keys
+    - apk add --update coreutils curl bash
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - PRIVATE_KEY=`echo "$SSH_PRIVATE_KEY" | base64 --decode`
+    - echo "${PRIVATE_KEY}" | ssh-add -
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - TEMPLATE_VIRTUAL_HOST=$(cat ./deploy/template-virtual-host.conf)
+    - |
+      ssh $USER_SERVER@$VAR_SERVER "cd /etc/apache2/sites-available/ && [ -f "$PROJECT_NAME-$DOMAIN_ENV.conf" ] || cat >> $PROJECT_NAME-$DOMAIN_ENV.conf<<EOF
+      $TEMPLATE_VIRTUAL_HOST
+      EOF"
+    - ssh $USER_SERVER@$VAR_SERVER "cd /etc/apache2/sites-available/ && sed -i -e "s/SUD-DOMAIN-CI/$SUB_DOMAIN/g" ./$PROJECT_NAME-$DOMAIN_ENV.conf && sed -i -e "s/PROJECT-NAME-CI/$CI_PROJECT_NAME/g" ./$PROJECT_NAME-$DOMAIN_ENV.conf && sed -i -e "s/ENV-CI/$ENV/g" ./$PROJECT_NAME-$DOMAIN_ENV.conf && sed -i -e "s/PORT-API-CI/$PORT_API/g" ./$PROJECT_NAME-$DOMAIN_ENV.conf"
+    - ssh $USER_SERVER@$VAR_SERVER "cd /etc/apache2/sites-available/ && a2ensite $PROJECT_NAME-$DOMAIN_ENV.conf && systemctl reload apache2 && certbot --apache -d $SUB_DOMAIN.tic-nova.com"
+
+  cache: []
+  except:
+    - schedules
+
+subdomain_branches:
+  <<: *version_branch
+  <<: *dev
+  <<: *subdomain
+  <<: *branches
+  <<: *manual
+
+subdomain_develop:
+  <<: *version_snapshot
+  <<: *dev
+  <<: *subdomain
+  <<: *develop
+  <<: *manual
+
+subdomain_valid:
+  <<: *version
+  <<: *valid
+  <<: *subdomain
+  <<: *main
+  <<: *manual
+
+subdomain_prod:
+  <<: *version
+  <<: *prod
+  <<: *subdomain
+  <<: *main
+  <<: *manual
+
+subdomain_prod_2:
+  <<: *version
+  <<: *prod_2
+  <<: *subdomain
+  <<: *main
+  <<: *manual
+
+# Release mobile
+.mobile: &mobile
+  image: alpine:3.10
+  stage: deploy
+  script:
+    - apk add --update git bash jq
+    - git config --global user.email "bbmouadh90@gmail.com"
+    - git config --global user.name "Ci Pipeline"
+    - git config --global push.followTags true
+    - git status
+    - |
+      echo $ENV
+      git fetch
+      if [ $ENV = 'DEV' ]; then
+        git checkout develop-mobile
+        git reset --hard origin/develop
+      else
+        git checkout main-mobile
+        git reset --hard origin/main
+      fi
+    - cd deploy
+    - chmod +x ./bump-android-build.sh
+    - chmod +x ./bump-ios-build.sh
+    - sed -i -e "s/VERSION-TAG-CI/$VERSION_TAG/g" ./get-build-from-gitlab-npm.sh
+    - sed -i -e "s/CI-PROJECT-ID-CI/$CI_PROJECT_ID/g" ./get-build-from-gitlab-npm.sh
+    - sed -i -e "s/CI-PROJECT-NAME-CI/$CI_PROJECT_NAME/g" ./get-build-from-gitlab-npm.sh
+    - chmod +x ./get-build-from-gitlab-npm.sh
+    - ./bump-android-build.sh
+    - ./bump-ios-build.sh
+    - ls
+    - cd ..
+    - git status
+    - git add .
+    - git status
+    - git commit -m "[CHORE][CI SKIP] Bump Android and iOS"
+    - git remote -v
+    - |
+      if [ $ENV = 'DEV' ]; then
+        git push --force https://gitlab-ci:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:develop-mobile
+      else
+        git push --force https://gitlab-ci:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:main-mobile
+      fi
+  cache: []
+  except:
+    - schedules
+
+mobile_branch:
+  <<: *version_branch
+  <<: *dev
+  <<: *mobile
+  <<: *branches
+  <<: *manual
+
+mobile_develop:
+  <<: *version_snapshot
+  <<: *dev
+  <<: *mobile
+  <<: *develop
+
+mobile_main:
+  <<: *version
+  <<: *valid
+  <<: *mobile
+  <<: *main

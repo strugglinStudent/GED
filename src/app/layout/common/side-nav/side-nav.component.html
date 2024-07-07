@@ -1,0 +1,29 @@
+<mat-nav-list>
+  <ng-container *ngFor="let item of navItems">
+    <ng-container *ngIf="shouldDisplay(item.roles)">
+      <mat-list-item>
+        <span [routerLink]="item.link" (click)="onItemClicked()">{{ item.name }}</span>
+
+        <mat-icon
+          *ngIf="item.children.length !== 0"
+          (click)="item.expanded = !item.expanded"
+          [svgIcon]="
+            item.expanded ? 'heroicons_outline:chevron-up' : 'heroicons_outline:chevron-down'
+          "
+        ></mat-icon>
+      </mat-list-item>
+      <ng-container *ngIf="item.expanded">
+        <ng-container *ngFor="let child of item.children">
+          <mat-list-item
+            [routerLink]="child.link"
+            (click)="onItemClicked()"
+            *ngIf="shouldDisplay(child.roles)"
+            style="padding-left: 60px"
+          >
+            {{ child.name }}
+          </mat-list-item>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</mat-nav-list>

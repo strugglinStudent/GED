@@ -1,0 +1,7 @@
+{
+  "name": "ged-nova-angular",
+  "version": "VERSION-CI",
+  "publishConfig": {
+    "registry": "https://gitlab.com/api/v4/projects/PROJECT-ID-CI/packages/npm/"
+  }
+}

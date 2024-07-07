@@ -1,0 +1,98 @@
+<div class="m-4" *ngIf="data.type === 'delete'">
+  <h2 mat-dialog-title>Confirm Deletion</h2>
+  <p>Are you sure you want to delete this user?</p>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">No</button>
+    <button
+      mat-button
+      class="bg-blue-900 text-white focus:ring-2"
+      (click)="onDelete()"
+      cdkFocusInitial
+    >
+      Yes
+    </button>
+  </mat-dialog-actions>
+</div>
+<div class="m-4" *ngIf="data.type !== 'delete'">
+  <h2 class="flex items-center justify-center mat-dialog-title">
+    {{ data.type === 'edit' ? 'Edit User' : 'Add New User' }}
+  </h2>
+
+  <div class="flex flex-col mat-dialog-content">
+    <form #userForm="ngForm" class="flex flex-col">
+      <div class="flex flex-row mb-4">
+        <mat-form-field class="w-full mr-4">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            placeholder="Username"
+            [(ngModel)]="data.user.userName"
+            name="userName"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            placeholder="Email"
+            [(ngModel)]="data.user.email"
+            name="email"
+            required
+          />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-row mb-4">
+        <mat-form-field class="w-full mr-4">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            placeholder="Password"
+            [(ngModel)]="data.user.password"
+            name="password"
+            [disabled]="data.type === 'edit'"
+            #passwordInput="ngModel"
+            [attr.aria-pressed]="generateGenericPassword()"
+          />
+          <mat-hint *ngIf="data.type === 'add'"
+            >Using generic password: userName_companyName_password. Can be changed later
+            on.</mat-hint
+          >
+        </mat-form-field>
+        <div *ngIf="data.isSuperAdmin" class="flex flex-row mb-4">
+          <mat-form-field class="w-full">
+            <mat-label>Role</mat-label>
+            <mat-select placeholder="Role" [(ngModel)]="data.user.role" name="role" required>
+              <mat-option value="Admin">Admin</mat-option>
+              <mat-option value="User">User</mat-option>
+              <mat-option value="SuperAdmin">SuperAdmin</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div *ngIf="data.isSuperAdmin" class="flex flex-row mb-4">
+        <mat-form-field class="w-full">
+          <mat-label>Company Name</mat-label>
+          <mat-select
+            placeholder="Company Name"
+            [(ngModel)]="data.user.companyName"
+            name="companyName"
+            required
+          >
+            <mat-option *ngFor="let company of companies" [value]="company.name">{{
+              company.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <div class="flex justify-end mat-dialog-actions">
+    <button mat-button (click)="closeDialog()" class="mr-2">Cancel</button>
+    <button mat-raised-button class="bg-blue-900" [disabled]="!userForm.valid" (click)="saveUser()">
+      {{ data.type === 'edit' ? 'Update' : 'Save' }}
+    </button>
+  </div>
+</div>
