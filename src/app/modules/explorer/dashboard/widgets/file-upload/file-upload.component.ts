@@ -50,9 +50,11 @@ export class FileUploadComponent implements OnInit {
     this.message = '';
 
     if (event.target.files && event.target.files[0]) {
+      console.log(event.target.files[0]);
       const file: File = event.target.files[0];
       this.currentFile = file;
       this.fileName = this.currentFile.name;
+      this.upload();
     } else {
       this.fileName = 'Select File';
     }

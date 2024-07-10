@@ -8,8 +8,9 @@
 
   <mat-form-field>
     <div>
-      <mat-toolbar class="flex flex-col">
+      <mat-toolbar class="flex flex-row">
         <input matInput [value]="fileName" />
+        <input type="file" id="fileInput" (change)="selectFile($event)" name="fileInput" />
 
         <button
           class="left-4"
@@ -22,8 +23,7 @@
         </button>
       </mat-toolbar>
 
-      <input type="file" id="fileInput" (change)="selectFile($event)" name="fileInput" />
-    </div>
+       </div>
   </mat-form-field>
 </div>
 

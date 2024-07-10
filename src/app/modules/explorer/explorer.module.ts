@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import {MatButton, MatButtonModule} from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { explorerRoutes } from './explorer.routing';
 import { ExplorerComponent } from './explorer.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatIconModule } from '@angular/material/icon';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 import { SharedModule } from '../../shared/shared.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ScrollableDirective } from '../../shared/directives/scrollable.directive';
@@ -21,9 +21,19 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import {FileUploadComponent} from "./dashboard/widgets/file-upload/file-upload.component";
 import {WidgetFrameComponent} from "./dashboard/widgets/widget-frame/widget-frame.component";
 import {WelcomeWidgetComponent} from "./dashboard/widgets/welcome-widget/welcome-widget.component";
+import {SingleFileUploadComponent} from "./dashboard/widgets/single-file-upload/single-file-upload.component";
+import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import { FileSizePipe } from 'app/shared/pipes/file-size.pipe';
+import {TruncateNamePipe} from "../../shared/pipes/truncate-name.pipe";
 LOAD_WASM().subscribe();
 @NgModule({
-  declarations: [ExplorerComponent, ScrollableDirective],
+  declarations: [
+    ExplorerComponent,
+    SingleFileUploadComponent,
+    ScrollableDirective,
+    WidgetFrameComponent,
+  ],
   imports: [
     NgxScannerQrcodeModule,
     CommonModule,
@@ -41,11 +51,21 @@ LOAD_WASM().subscribe();
     MatPaginatorModule,
     MatTooltipModule,
     NgxMaterialTimepickerModule,
-    FileUploadComponent,
-    WidgetFrameComponent,
     WelcomeWidgetComponent,
+    CdkDrag,
+    CdkDragHandle,
+    MatIcon,
+    MatButton,
+    MatCardContent,
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    SharedModule,
+    FileSizePipe,
+    TruncateNamePipe,
   ],
-  exports: [],
-  providers: [],
+  exports: [
+    SingleFileUploadComponent
+  ]
 })
 export class ExplorerModule {}

@@ -7,14 +7,14 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class FileUploadService {
-  private apiUrl = `${environment.api}/documents`;
+  private apiUrl = `http://localhost:8081/api/documents`;
   constructor(private http: HttpClient) {}
 
   upload(file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
-
+    console.log('we make it to upload');
     const req = new HttpRequest('POST', `${this.apiUrl}/upload`, formData, {
       reportProgress: true,
       responseType: 'json',
