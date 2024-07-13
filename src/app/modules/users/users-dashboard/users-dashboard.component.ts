@@ -58,7 +58,7 @@ export class UsersDashboardComponent implements OnInit {
         data: {
           type: type,
           user: user,
-          isSuperAdmin: this.isSuperAdmin,
+          isSuperAdmin: this.userService.isSuperAdmin(this.currentUser),
           companyName: this.companyName,
         },
       })

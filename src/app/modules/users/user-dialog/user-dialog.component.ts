@@ -38,7 +38,9 @@ export class UserDialogComponent {
   ) {
     this.data = dialogData;
     if (this.data.type !== 'delete') {
+      console.log("up here")
       if (this.data.isSuperAdmin)
+        console.log("here")
         this.companyService.getCompanies().subscribe((companies) => {
           this.companies = companies;
         });
