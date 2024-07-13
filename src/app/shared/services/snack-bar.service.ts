@@ -27,7 +27,6 @@ export class SnackBarService {
       horizontalPosition,
       verticalPosition,
       duration: durationInSeconds * 1000,
-      panelClass: ['mat-snack-bar-panel-custom', `mat-snack-bar-custom-alert-${type}`],
     });
   }
 }
