@@ -1,17 +1,27 @@
-<mat-card
-  class="fixed bottom-4 right-4 w-100 h-80 border border-gray-300 rounded-lg p-4"
->
+<mat-card class="w-80 h-60 border border-gray-300 rounded-lg p-1">
   <mat-card-header>
-    <mat-card-title
-      ><h2 class="text-lg font-medium mb-2 justify-center">Upload new documents</h2></mat-card-title
-    >
+    <mat-card-title class="text-lg font-medium">Upload new documents</mat-card-title>
   </mat-card-header>
-  <mat-card-content class="h-full flex flex-col justify-center items-center">
+  <mat-card-content>
     <div
-      class="border-2 border-dashed border-gray-300 rounded-lg py-10 text-center w-full h-full flex flex-col justify-center items-center"
+      *ngIf="!progressInfos.length"
+      class="border-2 border-dashed border-gray-300 rounded-lg py-10 text-center"
+      (drop)="onFileDropped($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      [ngClass]="{ 'border-blue-500': isDragging }"
     >
-      <p class="text-gray-500">Drop documents anywhere or</p>
-      <button mat-stroked-button color="primary" class="mt-2">Browse files</button>
+      <p class="text-gray-500 text-xl">Drop documents anywhere or</p>
+      <button mat-stroked-button color="primary" class="mt-2 related" (click)="fileInput.click()">
+        Browse files
+      </button>
+      <input #fileInput type="file" hidden (change)="selectFiles($event)" multiple />
     </div>
+    <div *ngIf="progressInfos.length" class="border-2 border-dashed border-gray-300 rounded-lg py-10 text-center text-gray-500 text-xl">You are already uploading please wait until the current done</div>
+    <app-upload-progress
+      *ngIf="progressInfos.length"
+      [progressInfos]="progressInfos"
+      [messages]="messages"
+    ></app-upload-progress>
   </mat-card-content>
 </mat-card>

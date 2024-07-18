@@ -1,0 +1,46 @@
+<mat-card
+  *ngIf="progressInfos.length && !hideAllCards"
+  class="fixed bottom-4 right-4 w-100 h-fit bg-transparent"
+>
+  <button mat-stroked-button color="primary" *ngIf="progressInfos.length>1" (click)="hideAllDocumentCard()">
+    Hide documents done
+  </button>
+  <div *ngFor="let info of progressInfos; let i = index">
+    <div class="mt-4 w-90 bg-gray-100 h-24 rounded-lg border border-blue-950">
+      <div
+        class="absolute bg-blue-300 rounded-lg h-23"
+        [style.width.%]="progress(info.loadSize, info.file.size)"
+      ></div>
+      <div class="relative flex flex-row justify-between">
+        <div class="flex flex-col text-xl mt-2 w-3/4 text-nowrap max-width-full">
+          <span class="relative ml-6 w-3/4 text-nowrap max-width-full"
+          >File: {{ info.file.name | truncateName }}</span
+          >
+          <div
+            *ngIf="info.status === 'uploading'"
+            class="relative ml-6 text-xs text-nowrap flex flex-col items-start"
+          >
+            <span class="block">Size: {{ info.loadSize | fileSize }}/{{ info.file.size | fileSize }} </span>
+            <span class="block">Uploading...</span>
+          </div>
+          <button
+            *ngIf="info.status === 'success'"
+            mat-stroked-button
+            color="primary"
+            class="ml-6 p-6 text-xs"
+            (click)="openDocument(info.file)"
+          >
+            Open Document
+          </button>
+        </div>
+        <p *ngIf="info.status === 'fail'">{{ info.file.name }}: Failed to upload</p>
+        <button *ngIf="info.status !== 'uploading'" mat-icon-button (click)="closeFile(i)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-card>
+  <button *ngIf="hideAllCards" class="fixed bottom-0 right-4 w- h-fit border border-gray-300 rounded-lg p-4" mat-stroked-button color="primary" (click)="showAgain()">
+    Show the {{progressInfos.length}} documents non done
+  </button>
