@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'truncateName',
 })
 export class TruncateNamePipe implements PipeTransform {
-  transform(fileName: string, maxLength: number = 25): string {
+  transform(fileName: string, maxLength: number = 14): string {
     if (fileName.length <= maxLength) {
       return fileName;
     }
