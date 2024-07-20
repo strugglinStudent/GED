@@ -18,22 +18,20 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxScannerQrcodeModule, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import {FileUploadComponent} from "./dashboard/widgets/file-upload/file-upload.component";
 import {WidgetFrameComponent} from "./dashboard/widgets/widget-frame/widget-frame.component";
 import {WelcomeWidgetComponent} from "./dashboard/widgets/welcome-widget/welcome-widget.component";
-import {SingleFileUploadComponent} from "./dashboard/widgets/single-file-upload/single-file-upload.component";
 import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 import { FileSizePipe } from 'app/shared/pipes/file-size.pipe';
 import {TruncateNamePipe} from "../../shared/pipes/truncate-name.pipe";
+import {DocumentUploadComponent} from "../document/Document-upload/document-upload.component";
+
 LOAD_WASM().subscribe();
 @NgModule({
   declarations: [
     ExplorerComponent,
-    SingleFileUploadComponent,
     ScrollableDirective,
-    WidgetFrameComponent,
-  ],
+    ],
   imports: [
     NgxScannerQrcodeModule,
     CommonModule,
@@ -63,9 +61,9 @@ LOAD_WASM().subscribe();
     SharedModule,
     FileSizePipe,
     TruncateNamePipe,
+    WidgetFrameComponent,
+    DocumentUploadComponent,
   ],
-  exports: [
-    SingleFileUploadComponent
-  ]
+  exports: []
 })
 export class ExplorerModule {}
