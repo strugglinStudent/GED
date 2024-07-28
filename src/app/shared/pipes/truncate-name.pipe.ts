@@ -16,4 +16,3 @@ export class TruncateNamePipe implements PipeTransform {
     return truncatedName + '.' + extension;
   }
 }
-

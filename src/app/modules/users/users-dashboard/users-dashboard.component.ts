@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
 import { MatCardHeader } from '@angular/material/card';
+import { TruncateNamePipe } from '../../../shared/pipes/truncate-name.pipe';
 
 @Component({
   selector: 'app-users-dashboard',
@@ -35,14 +36,15 @@ import { MatCardHeader } from '@angular/material/card';
     MatRowDef,
     MatHeaderRowDef,
     MatCardHeader,
+    TruncateNamePipe,
   ],
+  providers: [TruncateNamePipe],
   templateUrl: './users-dashboard.component.html',
-  styleUrl: './users-dashboard.component.scss',
+  styleUrls: ['./users-dashboard.component.scss'],
 })
 export class UsersDashboardComponent implements OnInit {
   users: User[] = [];
   currentUser: User;
-  isSuperAdmin: boolean;
   public displayedColumns: string[];
   constructor(
     private userService: UserService,
@@ -86,8 +88,8 @@ export class UsersDashboardComponent implements OnInit {
       this.currentUser = user;
       this.companyName = user.companyName;
       this.displayedColumns = this.userService.isSuperAdmin(this.currentUser)
-        ? ['userName', 'email', 'password', 'role', 'companyName', 'actions']
-        : ['userName', 'email', 'password', 'actions'];
+        ? ['avatar', '_id', 'userName', 'email', 'role', 'companyName', 'updatedAt', 'actions']
+        : ['avatar', '_id', 'userName', 'email', 'role', 'updatedAt', 'actions'];
     });
     this.loadUsers();
   }

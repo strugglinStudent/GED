@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-//import { CompanyDashboardComponent } from './company-dashboard/company-dashboard.component';
-import { CreateCompanyComponent } from './create-company/create-company.component';
 import { CompanyService } from 'app/shared/services/company.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -14,8 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
-    CreateCompanyComponent,
-    //EditCompanyComponent,
     //CompanyDashboardComponent,
   ],
   imports: [

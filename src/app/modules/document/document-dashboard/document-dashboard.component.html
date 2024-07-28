@@ -1,0 +1,23 @@
+<div style="overflow-y: scroll; max-height: calc(100vh - 100px)">
+  <mat-table [dataSource]="dataSource">
+    <!-- Image Column -->
+    <ng-container matColumnDef="image">
+      <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+      <mat-cell *matCellDef="let document">
+        <img [src]="document.path" alt="{{ document.originalName }}" width="100" />
+      </mat-cell>
+    </ng-container>
+
+    <!-- Content Column -->
+    <ng-container matColumnDef="content">
+      <mat-header-cell *matHeaderCellDef> Content </mat-header-cell>
+      <mat-cell *matCellDef="let document">
+        <pre>{{ document.content }}</pre>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Table Header and Rows -->
+    <mat-header-row class="relative w-full" *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>

@@ -1,0 +1,17 @@
+.document-dashboard {
+  padding: 20px;
+}
+
+.mat-table {
+  width: 100%;
+}
+
+.mat-header-cell, .mat-cell {
+  padding: 8px;
+}
+
+.document-image {
+  max-width: 100px; /* Adjust size as needed */
+  max-height: 100px; /* Adjust size as needed */
+  object-fit: cover;
+}
