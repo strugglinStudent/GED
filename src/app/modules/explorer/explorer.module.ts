@@ -1,11 +1,11 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatButton, MatButtonModule} from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { explorerRoutes } from './explorer.routing';
 import { ExplorerComponent } from './explorer.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../../shared/shared.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ScrollableDirective } from '../../shared/directives/scrollable.directive';
@@ -18,20 +18,16 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxScannerQrcodeModule, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import {WidgetFrameComponent} from "./dashboard/widgets/widget-frame/widget-frame.component";
-import {WelcomeWidgetComponent} from "./dashboard/widgets/welcome-widget/welcome-widget.component";
-import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { FileSizePipe } from 'app/shared/pipes/file-size.pipe';
-import {TruncateNamePipe} from "../../shared/pipes/truncate-name.pipe";
-import {DocumentUploadComponent} from "../document/Document-upload/document-upload.component";
+import { TruncateNamePipe } from '../../shared/pipes/truncate-name.pipe';
+import { DocumentUploadComponent } from '../document/Document-upload/document-upload.component';
+import { DocumentDashboardComponent } from '../document/document-dashboard/document-dashboard.component';
 
 LOAD_WASM().subscribe();
 @NgModule({
-  declarations: [
-    ExplorerComponent,
-    ScrollableDirective,
-    ],
+  declarations: [ExplorerComponent, ScrollableDirective],
   imports: [
     NgxScannerQrcodeModule,
     CommonModule,
@@ -49,7 +45,6 @@ LOAD_WASM().subscribe();
     MatPaginatorModule,
     MatTooltipModule,
     NgxMaterialTimepickerModule,
-    WelcomeWidgetComponent,
     CdkDrag,
     CdkDragHandle,
     MatIcon,
@@ -61,9 +56,9 @@ LOAD_WASM().subscribe();
     SharedModule,
     FileSizePipe,
     TruncateNamePipe,
-    WidgetFrameComponent,
     DocumentUploadComponent,
+    DocumentDashboardComponent,
   ],
-  exports: []
+  exports: [],
 })
 export class ExplorerModule {}

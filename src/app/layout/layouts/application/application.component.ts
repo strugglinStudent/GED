@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { UserService } from 'app/shared/services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GedMediaWatcherService } from '../../../shared/layout-config/services/media-watcher';
+import { explorerRoutes } from '../../../modules/explorer/explorer.routing';
 @Component({
   selector: 'app-application-layout',
   templateUrl: './application.component.html',
@@ -41,4 +42,6 @@ export class ApplicationLayoutComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
   }
+
+  protected readonly explorerRoutes = explorerRoutes;
 }

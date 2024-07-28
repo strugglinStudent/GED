@@ -4,7 +4,13 @@
       <button mat-icon-button (click)="snav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      {{ user?.companyName }}
+      <div class="text-2xl">
+        <a
+          [routerLink]="['/explorer']"
+          class="no-underline text-white hover:text-3xl visited:text-white"
+          >{{ user?.companyName }}</a
+        >
+      </div>
     </div>
     <div class="flex-1 flex"></div>
 
