@@ -5,4 +5,6 @@ export class User {
   password?: string;
   role?: string;
   companyName?: string;
+  avatar?: string;
+  status?: string;
 }

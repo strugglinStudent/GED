@@ -52,7 +52,7 @@ export class UserService {
   // -----------------------------------------------------------------------------------------------------
 
   /**
-   * Get the current logged in user data
+   * Get the current logged-in user data
    */
   getUserId(): string {
     if (this._authService.accessToken) {
@@ -78,7 +78,7 @@ export class UserService {
   update(user: User): Observable<any> {
     const userId = this.getUserId();
     if (userId) {
-      return this._httpClient.patch<User>(`${this.apiUrl}/${userId}`, { user }).pipe(
+      return this._httpClient.patch<User>(`${this.apiUrl}/${userId}`, user).pipe(
         map((response) => {
           this._user.next(response);
         }),
@@ -100,6 +100,18 @@ export class UserService {
 
   deleteUser(_id: string): Observable<void> {
     return this._httpClient.delete<void>(`${this.apiUrl}/${_id}`, this.getHttpOptions());
+  }
+
+  updateAvatar(file: File): Observable<any> {
+    const userId = this.getUserId(); // Get the user ID
+    const formData = new FormData();
+    formData.append('avatar', file, file.name);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    };
+    return this._httpClient.put(`${this.apiUrl}/${userId}/avatar`, formData, httpOptions);
   }
 
   //check role:

@@ -68,8 +68,7 @@ export class CompanyDashboardComponent implements OnInit {
               this.loadCompanies();
             },
             (error) => {
-              const errorMessage = error?.error || 'Delete failed';
-              this.snackBar.openSnackBar(errorMessage, 'error');
+              this.snackBar.openSnackBar(error?.message || 'Delete failed', 'error');
             },
           );
         }

@@ -38,16 +38,13 @@ export class UserDialogComponent {
   ) {
     this.data = dialogData;
     if (this.data.type !== 'delete') {
-      console.log("up here")
       if (this.data.isSuperAdmin)
-        console.log("here")
         this.companyService.getCompanies().subscribe((companies) => {
           this.companies = companies;
         });
       if (this.data.type === 'add') {
         this.data.user = new User();
         this.data.user.role = 'User'; // Set default value if role is not defined
-        this.generateGenericPassword(); // Generate initial generic password for new user
       }
     }
   }
@@ -85,10 +82,12 @@ export class UserDialogComponent {
   }
 
   generateGenericPassword(): string {
-    if (this.data.user.userName && this.data.user.companyName) {
-      return (this.data.user.password = `${this.data.user.userName}_${this.data.user.companyName}_Password1*`);
+    if (this.data.type === 'add') {
+      if (this.data.user.userName && this.data.user.companyName) {
+        return (this.data.user.password = `${this.data.user.userName}_${this.data.user.companyName}_Password1*`);
+      }
+      if (this.data.user.userName && !this.data.isSuperAdmin)
+        return (this.data.user.password = `${this.data.user.userName}_${this.data.companyName}_Password1*`);
     }
-    if (this.data.user.userName && !this.data.isSuperAdmin)
-      return (this.data.user.password = `${this.data.user.userName}_${this.data.companyName}_Password1*`);
   }
 }

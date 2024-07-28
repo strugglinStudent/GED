@@ -36,13 +36,11 @@ export class AuthSignInComponent implements OnInit {
           localStorage.setItem('refreshToken', res.refreshToken);
           this.loading = false;
           this.authService.authenticationSubject.next(true);
-          this.router.navigate(['/explorer']).then(() => {
-            window.location.reload();
-          });
+          this.router.navigate(['/explorer']);
         },
-        error: () => {
+        error: (res) => {
           this.loading = false;
-          this._snackBar.openSnackBar('verifier le mot de passe ou email', 'error');
+          this._snackBar.openSnackBar(res?.message || 'verifier le mot de passe ou email', 'error');
         },
       });
     }
