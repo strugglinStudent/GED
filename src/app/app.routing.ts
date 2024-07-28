@@ -10,6 +10,7 @@ import { ConfirmationComponent } from './modules/auth/confirmation/confirmation.
 import { CompanyDashboardComponent } from './modules/company/company-dashboard/company-dashboard.component';
 import { UsersDashboardComponent } from './modules/users/users-dashboard/users-dashboard.component';
 import { ResetPasswordComponent } from './modules/auth/reset-password/reset-password.component';
+import { DocumentDashboardComponent } from './modules/document/document-dashboard/document-dashboard.component';
 
 // @formatter:off
 // tslint:disable:max-line-length
@@ -117,9 +118,7 @@ export const appRoutes: Route[] = [
       layout: 'application',
     },
     component: LayoutComponent,
-    children: [
-      // Add routes for the File Management here
-    ],
+    children: [{ path: '', component: DocumentDashboardComponent }],
   },
   { path: '**', redirectTo: '' },
 ];

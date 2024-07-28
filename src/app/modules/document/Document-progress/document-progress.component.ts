@@ -8,7 +8,7 @@ import { FileSizePipe } from '../../../shared/pipes/file-size.pipe';
 import { TruncateNamePipe } from '../../../shared/pipes/truncate-name.pipe';
 
 interface ProgressInfo {
-  status: 'initial' | 'uploading' | 'success' | 'fail';
+  status: 'initial' | 'compressing' | 'OCR performing' | 'uploading' | 'success' | 'fail';
   loadSize: number;
   file: File;
   timeoutId?: number;
@@ -77,14 +77,11 @@ export class DocumentProgressComponent implements OnChanges {
     window.open(fileURL, '_blank');
   }
   setAutoCloseTimeout(file: File): void {
-    const info = this.progressInfos.find((info) => info.file === file);
-    /*
-     if ((info.status === 'success' || info.status === 'fail') && !info.timeoutId) {
-       info.timeoutId = window.setTimeout(() => {
-         this.closeFile(file);
-       }, 15000); // Set timeout to 3 seconds
-     }
-   }
-   */
+    const info = this.progressInfos.find((progressInfo) => progressInfo.file === file);
+    if ((info.status === 'success' || info.status === 'fail') && !info.timeoutId) {
+      info.timeoutId = window.setTimeout(() => {
+        this.closeFile(file);
+      }, 15000); // Set timeout to 3 seconds
+    }
   }
 }

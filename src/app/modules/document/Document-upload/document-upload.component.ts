@@ -6,9 +6,10 @@ import { FileSizePipe } from '../../../shared/pipes/file-size.pipe';
 import { TruncateNamePipe } from '../../../shared/pipes/truncate-name.pipe';
 import { DocumentService } from '../../../shared/services/document.service';
 import { DocumentProgressComponent } from '../Document-progress/document-progress.component';
+import { SnackBarService } from '../../../shared/services/snack-bar.service';
 
 interface ProgressInfo {
-  status: 'initial' | 'uploading' | 'success' | 'fail';
+  status: 'initial' | 'compressing' | 'OCR performing' | 'uploading' | 'success' | 'fail';
   loadSize: number;
   file: File;
 }
@@ -37,7 +38,10 @@ export class DocumentUploadComponent {
   messages: string[] = [];
   isDragging = false;
 
-  constructor(private documentUploadService: DocumentService) {}
+  constructor(
+    private documentService: DocumentService,
+    private snackBar: SnackBarService,
+  ) {}
 
   selectFiles(event: any): void {
     this.selectedFiles = event.target.files;
@@ -67,35 +71,73 @@ export class DocumentUploadComponent {
     this.isDragging = false;
   }
 
-  compressFiles(): void {}
   uploadFiles(): void {
     if (this.selectedFiles) {
-      const files = Array.from(this.selectedFiles);
+      const fileArray = Array.from(this.selectedFiles);
       this.progressInfos = [];
       this.messages = [];
+      fileArray.forEach((file, index) => {
+        const progressInfo: ProgressInfo = {
+          status: 'initial',
+          loadSize: 0,
+          file: file,
+        };
+        this.progressInfos.push(progressInfo);
 
-      files.forEach((file, index) => {
-        this.progressInfos[index] = { status: 'initial', loadSize: 0, file: file };
-        this.documentUploadService.uploadDocument(file).subscribe({
-          next: (data) => {
-            if (data.status === 'uploading') {
-              this.progressInfos[index] = {
-                status: data.status,
-                loadSize: data.message,
-                file: file,
-              };
-            } else if (data.status === 'success') {
-              this.progressInfos[index] = {
-                status: data.status,
-                loadSize: 0,
-                file: file,
-              };
-              this.messages.push(`File ${file.name} uploaded successfully`);
-            }
+        // Compress the image
+        this.documentService.compressImage(file).subscribe({
+          next: (compressedFile) => {
+            this.progressInfos[index].status = 'compressing';
+            // Perform OCR
+            this.documentService.performOcr(compressedFile).subscribe({
+              next: (Result) => {
+                this.progressInfos[index].status = 'OCR performing';
+
+                // Upload the document
+                const document = {
+                  originalName: `${file.name}`,
+                  mimeType: file.type,
+                  size: compressedFile.size,
+                  uploadDate: new Date(),
+                  content: Result.ParsedResults[0]?.ParsedText || 'could not found anything',
+                  path: '',
+                };
+                this.documentService.uploadDocument(compressedFile, document).subscribe({
+                  next: (data) => {
+                    if (data.status === 'uploading') {
+                      this.progressInfos[index] = {
+                        status: data.status,
+                        loadSize: data.message,
+                        file: file,
+                      };
+                    } else if (data.status === 'success') {
+                      this.progressInfos[index] = {
+                        status: data.status,
+                        loadSize: 0,
+                        file: file,
+                      };
+                      this.documentService.getAllDocuments();
+                    }
+                  },
+                  error: (err) => {
+                    this.progressInfos[index] = { status: 'fail', loadSize: 0, file: file };
+                    this.snackBar.openSnackBar(
+                      `Could not upload file ${file.name}: ${err.message}`,
+                    );
+                  },
+                });
+              },
+              error: (err) => {
+                this.progressInfos[index] = { status: 'fail', loadSize: 0, file: file };
+                this.snackBar.openSnackBar(
+                  `Failed to perform OCR on file ${file.name}: ${err.message}`,
+                );
+              },
+            });
           },
           error: (err) => {
-            this.progressInfos[index] = { status: 'fail', loadSize: 100, file: file };
-            this.messages.push(`Could not upload file ${file.name}: ${err.message}`);
+            this.progressInfos[index] = { status: 'fail', loadSize: 0, file: file };
+            this.snackBar.openSnackBar(`Failed to compress file ${file.name}: ${err.message}`);
           },
         });
       });
