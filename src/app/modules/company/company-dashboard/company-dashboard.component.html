@@ -44,5 +44,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+
+    <div *ngIf="!companies.length" class="text-xl text-gray-500 pl-1/2 pt-4">no data found</div>
   </div>
 </div>

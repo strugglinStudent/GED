@@ -23,8 +23,10 @@ export class ForgotPasswordComponent implements OnInit {
     // Create the form
     this.forgotPasswordForm = this._formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
+      companyName: ['', Validators.required],
     });
   }
+
   sendResetLink(): void {
     // Return if the form is invalid
     if (this.forgotPasswordForm.invalid) {
@@ -33,7 +35,7 @@ export class ForgotPasswordComponent implements OnInit {
 
     // Forgot password
     this._authService
-      .forgotPassword(this.forgotPasswordForm.get('email').value)
+      .forgotPassword(this.forgotPasswordForm.value)
       .pipe(
         finalize(() => {
           // Re-enable the form
@@ -53,10 +55,6 @@ export class ForgotPasswordComponent implements OnInit {
         },
         () => {
           this.loading = false;
-          this._snackBar.openSnackBar(
-            'Email does not found! Are you sure you are already a member?',
-            'error',
-          );
         },
       );
   }

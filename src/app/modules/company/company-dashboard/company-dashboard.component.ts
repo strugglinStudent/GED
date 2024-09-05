@@ -4,45 +4,11 @@ import { SnackBarService } from '../../../shared/services/snack-bar.service';
 import { CompanyService } from '../../../shared/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyDialogComponent } from '../company-dialog/company-dialog.component';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from '@angular/material/table';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton, MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-company-dashboard',
-  standalone: true,
   templateUrl: './company-dashboard.component.html',
   styleUrl: './company-dashboard.component.scss',
-  imports: [
-    MatTable,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderCellDef,
-    MatCell,
-    MatCellDef,
-    MatMenuTrigger,
-    MatIcon,
-    MatIconButton,
-    MatMenu,
-    MatMenuItem,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatHeaderRowDef,
-    MatButton,
-  ],
 })
 export class CompanyDashboardComponent implements OnInit {
   companies: Company[] = [];

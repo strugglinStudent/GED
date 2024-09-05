@@ -57,7 +57,6 @@ export class ResetPasswordComponent implements OnInit {
       },
       () => {
         this.loading = false;
-        this.snackBar.openSnackBar('Failed to reset password. Please try again later.', 'error');
       },
     );
   }

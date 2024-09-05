@@ -16,8 +16,15 @@ import { GedConfigModule } from './shared/layout-config/services/config';
 import { GedModule } from './shared/layout-config';
 import { IconsModule } from './shared/icons.module';
 import { TokenInterceptor } from './shared/interceptors/auth.interceptor';
+import { ImageCropperComponent } from 'ngx-image-cropper';
+import { AuthModule } from './modules/auth/auth.module'; // Adjust path as necessary
+
 import localeEn from '@angular/common/locales/en';
 import { AuthService } from './shared/services/auth.service';
+import { AiApiInterceptor } from './shared/interceptors/ai-api.interceptor';
+import { OcrApiInterceptor } from './shared/interceptors/ocr-api.interceptor';
+import { ApiErrorsInterceptor } from './shared/interceptors/api-errors.interceptor';
+import { ApplicationLayoutModule } from './layout/layouts/application/application.module';
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
   scrollPositionRestoration: 'enabled',
@@ -31,18 +38,19 @@ registerLocaleData(localeEn, 'en-US');
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes, routerConfig),
-
     GedModule,
     GedConfigModule.forRoot(appConfig),
     IconsModule,
-
+    ImageCropperComponent,
     MatDialogModule,
     MatSelectModule,
     // Layout module of your application
     LayoutModule,
+    ApplicationLayoutModule,
     SharedModule,
     HttpClientModule,
     MatMenuModule,
+    AuthModule,
   ],
   providers: [
     AuthService,
@@ -52,6 +60,13 @@ registerLocaleData(localeEn, 'en-US');
       useClass: TokenInterceptor,
       multi: true,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiErrorsInterceptor,
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AiApiInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: OcrApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

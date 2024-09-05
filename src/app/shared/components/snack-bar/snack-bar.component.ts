@@ -11,8 +11,22 @@ export class SnackBarComponent {
     public snackBarRef: MatSnackBarRef<SnackBarComponent>,
     @Inject(MAT_SNACK_BAR_DATA) public data: any,
   ) {}
-
   dismiss(): void {
     this.snackBarRef.dismiss();
+  }
+
+  getSnackbarColor(): string {
+    switch (this.data.type) {
+      case 'info':
+        return 'blue';
+      case 'success':
+        return 'green';
+      case 'warning':
+        return '#DF8C32FF';
+      case 'error':
+        return 'red';
+      default:
+        return 'gray';
+    }
   }
 }

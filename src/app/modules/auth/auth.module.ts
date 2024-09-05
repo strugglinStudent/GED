@@ -15,13 +15,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-
 @NgModule({
   declarations: [
     AuthSignInComponent,
     ForgotPasswordComponent,
     SignUpComponent,
     ResetPasswordComponent,
+    AuthSignInComponent,
   ],
   imports: [
     RouterModule,

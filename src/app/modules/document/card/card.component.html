@@ -1,0 +1,49 @@
+<div class="pt-4 flex justify-between items-center">
+  <div></div>
+  <!-- This empty div ensures space on the left -->
+  <!-- Sort Controls -->
+  <div class="flex">
+    <mat-form-field appearance="outline">
+      <mat-label>Sort By</mat-label>
+      <mat-select (selectionChange)="sortData()" [(value)]="selectedSort">
+        <mat-option *ngFor="let sortOption of sortOptions" [value]="sortOption.value">
+          {{ sortOption.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Sort Direction Button -->
+    <button mat-icon-button (click)="toggleSortDirection()">
+      <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+    </button>
+  </div>
+</div>
+<div class="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4 pt-0">
+  <ng-container *ngFor="let document of dataSource.filteredData">
+    <mat-card class="relative rounded-t-2xl">
+      <img
+        mat-card-image
+        [src]="document.path"
+        alt="Card cover image"
+        class="object-cover lg:h-30 sm:h-40 md:h-20"
+        (click)="openDocumentDialog(document)"
+      />
+
+      <div class="flex flex-row justify-between">
+        <span
+          class="p-3 pr-0 text-lg font-semibold leading-tight truncate"
+          (click)="openDocumentDialog(document)"
+        >
+          {{ document.content?.title }}
+        </span>
+        <app-document-action
+          [document]="document"
+          (EventEmitted)="changeEmit()"
+        ></app-document-action>
+      </div>
+      <div class="-mt-4 px-3 pb-1 flex flex-col">
+        <span class="text-secondary mt-1 text-xs truncate">{{ document._id }}</span>
+        <span class="text-secondary mt-1 text-xs">{{ document.status }}</span>
+      </div>
+    </mat-card>
+  </ng-container>
+</div>

@@ -15,7 +15,6 @@ export class ApplicationLayoutComponent implements OnInit, OnDestroy {
   user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   private _GedMediaWatcherService: GedMediaWatcherService;
-  // private _navigationService: navigationService;
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
@@ -44,4 +43,14 @@ export class ApplicationLayoutComponent implements OnInit, OnDestroy {
   }
 
   protected readonly explorerRoutes = explorerRoutes;
+  protected readonly Date = Date;
+
+  onSearch(event: Event) {
+    const query = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this._router.navigate([], {
+      relativeTo: this._activatedRoute,
+      queryParams: { search: query },
+      queryParamsHandling: 'merge', // merge with existing query params
+    });
+  }
 }

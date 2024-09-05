@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Crop Image</h2>
+<mat-dialog-content class="mat-typography w-200">
+  <div class="flex flex-col items-center">
+    <img
+      *ngIf="!filename"
+      src="https://www.gstatic.com/identity/boq/profilepicturepicker/photo_silhouette_e02a5f5deb3ffc173119a01bc9575490.png"
+      alt=""
+      class="h-80 w-80"
+    />
+    <div *ngIf="filename" class="flex flex-row items-stretch h-100 p-4 border rounded-md shadow-lg">
+      <image-cropper
+        class="h-100"
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        [roundCropper]="true"
+        (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+      <img
+        *ngIf="croppingImage.objectUrl"
+        [src]="croppingImage.objectUrl"
+        alt="objectUrl"
+        class="w-15 h-15"
+      />
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="flex flex-0 justify-between">
+  <div class="flex gap-1">
+    <label for="avatar-input-file">
+      <button mat-button (click)="fileInput.click()">Select New Avatar</button>
+      <input
+        type="file"
+        #fileInput
+        id="avatar-input-file"
+        accept="image/*"
+        class="hidden"
+        (change)="fileChangeEvent($event)"
+      />
+    </label>
+    <button mat-button (click)="onCancel()">Delete current avatar</button>
+  </div>
+  <div class="flex gap-2">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button (click)="onSave()">Save</button>
+  </div>
+</mat-dialog-actions>

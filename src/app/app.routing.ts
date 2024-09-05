@@ -11,9 +11,13 @@ import { CompanyDashboardComponent } from './modules/company/company-dashboard/c
 import { UsersDashboardComponent } from './modules/users/users-dashboard/users-dashboard.component';
 import { ResetPasswordComponent } from './modules/auth/reset-password/reset-password.component';
 import { DocumentDashboardComponent } from './modules/document/document-dashboard/document-dashboard.component';
+import { ProfileComponent } from './layout/common/profile/profile.component';
+import { UserGroupListComponent } from './modules/user-group/user-group-list/user-group-list.component';
+import { DocumentDistributionComponent } from './modules/document/document-distribution/document-distribution.component';
+import { DocumentArchiveComponent } from './modules/document/document-archive/document-archive.component';
+import { DocumentContentListComponent } from './modules/document/document-content-list/document-content-list.component';
+import { WorkflowListComponent } from './modules/workflow/workflow-list/workflow-list.component';
 
-// @formatter:off
-// tslint:disable:max-line-length
 export const appRoutes: Route[] = [
   {
     path: '',
@@ -22,103 +26,108 @@ export const appRoutes: Route[] = [
   },
   {
     path: '',
+    component: LayoutComponent,
     canActivate: [NoAuthGuard],
     canActivateChild: [NoAuthGuard],
-    component: LayoutComponent,
-    data: {
-      layout: 'sign-in',
-    },
+    data: { layout: 'sign-in' },
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'sign-in',
-      },
-      {
         path: 'sign-in',
-        data: {
-          breadcrumb: 'c',
-          animation: 'sign-in',
-        },
         component: AuthSignInComponent,
-        loadChildren: () => import('app/modules/auth/auth.module').then((m) => m.AuthModule),
+        data: { breadcrumb: 'Sign In', animation: 'sign-in' },
       },
       {
         path: 'forgot-password',
         component: ForgotPasswordComponent,
-        loadChildren: () => import('app/modules/auth/auth.module').then((m) => m.AuthModule),
       },
       {
-        path: 'reset-password', // Add the reset-password route
+        path: 'reset-password',
         component: ResetPasswordComponent,
-        loadChildren: () => import('app/modules/auth/auth.module').then((m) => m.AuthModule),
       },
       {
         path: 'sign-up',
         component: SignUpComponent,
-        loadChildren: () => import('app/modules/auth/auth.module').then((m) => m.AuthModule),
+      },
+      {
+        path: 'confirmation',
+        component: ConfirmationComponent,
+        data: { layout: 'empty' },
       },
     ],
   },
   {
     path: '',
+    component: LayoutComponent,
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
-    component: LayoutComponent,
-    data: {
-      layout: 'application',
-    },
+    data: { layout: 'application' },
     children: [
       {
         path: 'explorer',
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'User'] },
         loadChildren: () =>
           import('app/modules/explorer/explorer.module').then((m) => m.ExplorerModule),
       },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+      },
+      {
+        path: 'company-dashboard',
+        component: CompanyDashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['SuperAdmin'] },
+      },
+      {
+        path: 'users-dashboard',
+        component: UsersDashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'SuperAdmin'] },
+      },
+      {
+        path: 'group-management',
+        component: UserGroupListComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
+      },
+      {
+        path: 'workflow-management',
+        component: UserGroupListComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
+      },
+      {
+        path: 'document-distribution',
+        component: DocumentDistributionComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'User'] },
+      },
+      {
+        path: 'archive',
+        component: DocumentArchiveComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin'] },
+      },
+      {
+        path: 'document-management',
+        component: DocumentDashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'User'] },
+      },
+      {
+        path: 'document-content',
+        component: DocumentContentListComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRoles: ['Admin', 'User'] },
+      },
     ],
-  },
-  {
-    path: 'confirmation',
-    component: ConfirmationComponent,
-    data: {
-      layout: 'empty',
-    },
   },
   {
     path: 'sign-out',
     canActivate: [AuthGuard],
     loadChildren: () => import('app/modules/auth/sign-out/sign-out.routes'),
-    data: {
-      layout: 'sign-in',
-    },
-  },
-  {
-    path: 'company-dashboard',
-    canActivate: [RoleGuard],
-    data: {
-      expectedRoles: ['SuperAdmin'],
-      layout: 'application',
-    },
-    component: LayoutComponent,
-    children: [{ path: '', component: CompanyDashboardComponent }],
-  },
-  {
-    path: 'users-dashboard',
-    canActivate: [RoleGuard],
-    data: {
-      expectedRoles: ['Admin', 'SuperAdmin'],
-      layout: 'application',
-    },
-    component: LayoutComponent,
-    children: [{ path: '', component: UsersDashboardComponent }],
-  },
-  {
-    path: 'file-management',
-    canActivate: [AuthGuard],
-    data: {
-      layout: 'application',
-    },
-    component: LayoutComponent,
-    children: [{ path: '', component: DocumentDashboardComponent }],
+    data: { layout: 'sign-in' },
   },
   { path: '**', redirectTo: '' },
 ];

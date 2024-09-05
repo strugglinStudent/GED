@@ -1,29 +1,45 @@
-<mat-nav-list>
-  <ng-container *ngFor="let item of navItems">
-    <ng-container *ngIf="shouldDisplay(item.roles)">
-      <mat-list-item>
-        <span [routerLink]="item.link" (click)="onItemClicked()">{{ item.name }}</span>
+<ng-container *ngFor="let item of navItems">
+  <ng-container *ngIf="shouldDisplay(item.roles)">
+    <mat-divider></mat-divider>
+    <mat-list-item *ngIf="!item.expandable" class="text-white">
+      <a
+        matLine
+        [routerLink]="item?.link"
+        class="text-white flex items-center hover:bg-primary-50/10 p-2 rounded w-full"
+      >
+        <span class="text-white/90">{{ item.name }}</span>
+      </a>
+    </mat-list-item>
 
-        <mat-icon
-          *ngIf="item.children.length !== 0"
-          (click)="item.expanded = !item.expanded"
-          [svgIcon]="
-            item.expanded ? 'heroicons_outline:chevron-up' : 'heroicons_outline:chevron-down'
-          "
-        ></mat-icon>
-      </mat-list-item>
-      <ng-container *ngIf="item.expanded">
-        <ng-container *ngFor="let child of item.children">
+    <mat-expansion-panel
+      *ngIf="item.expandable"
+      [expanded]="item?.expanded"
+      (opened)="item.expanded = true"
+      (closed)="item.expanded = false"
+      class="bg-transparent"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span class="text-white"> {{ item.name }}</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-nav-list>
+        <ng-container
+          *ngFor="let child of item?.children"
+          class="text-gray-50 p-2 hover:bg-primary-50/10"
+        >
+          <mat-divider></mat-divider>
           <mat-list-item
-            [routerLink]="child.link"
-            (click)="onItemClicked()"
             *ngIf="shouldDisplay(child.roles)"
-            style="padding-left: 60px"
+            matLine
+            [routerLink]="child.link"
+            class="p-2 rounded w-full"
           >
-            {{ child.name }}
+            <span class="text-white/80"> {{ child.name }}</span>
           </mat-list-item>
         </ng-container>
-      </ng-container>
-    </ng-container>
+      </mat-nav-list>
+    </mat-expansion-panel>
   </ng-container>
-</mat-nav-list>
+</ng-container>

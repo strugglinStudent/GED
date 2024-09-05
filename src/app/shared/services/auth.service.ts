@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, catchError } from 'rxjs';
 import { User } from '../models/user';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AuthUtils } from '../guards/auth.utils';
 import { Router } from '@angular/router';
-import { catchError, tap } from 'rxjs/operators';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -116,9 +114,8 @@ export class AuthService {
         }),
       );
   }
-
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.endpoint}/forget-password`, email);
+  forgotPassword(data: { email: string; companyName: string }): Observable<any> {
+    return this.http.post(`${this.endpoint}/forget-password`, data);
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {

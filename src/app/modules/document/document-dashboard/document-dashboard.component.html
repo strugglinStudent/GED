@@ -1,23 +1,59 @@
-<div style="overflow-y: scroll; max-height: calc(100vh - 100px)">
-  <mat-table [dataSource]="dataSource">
-    <!-- Image Column -->
-    <ng-container matColumnDef="image">
-      <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
-      <mat-cell *matCellDef="let document">
-        <img [src]="document.path" alt="{{ document.originalName }}" width="100" />
-      </mat-cell>
-    </ng-container>
+<div class="flex-col overflow-y-auto w-full">
+  <!-- Toolbar for view selection and sorting -->
+  <mat-toolbar color="primary" class="justify-between">
+    <!-- View Toggle Icons -->
+    <div class="flex">
+      <mat-button-toggle-group
+        [(ngModel)]="displayMode"
+        [hideSingleSelectionIndicator]="'true'"
+        aria-label="Display Mode"
+      >
+        <mat-button-toggle value="largeCards">
+          <mat-icon>view_module</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="smallCards">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="table">
+          <mat-icon>view_headline</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
 
-    <!-- Content Column -->
-    <ng-container matColumnDef="content">
-      <mat-header-cell *matHeaderCellDef> Content </mat-header-cell>
-      <mat-cell *matCellDef="let document">
-        <pre>{{ document.content }}</pre>
-      </mat-cell>
-    </ng-container>
+    <div class="flex flex-0">
+      <!-- Upload Document Icon -->
+      <button mat-icon-button (click)="fileInput.click()">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <input #fileInput type="file" hidden (change)="selectFiles($event)" multiple />
+    </div>
+  </mat-toolbar>
 
-    <!-- Table Header and Rows -->
-    <mat-header-row class="relative w-full" *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-  </mat-table>
+  <app-document-progress
+    *ngIf="progressInfos.length"
+    [progressInfos]="progressInfos"
+  ></app-document-progress>
+  <div
+    (drop)="onFileDropped($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    [ngClass]="{ 'border-blue-500': isDragging }"
+  >
+    <!-- Large Cards View -->
+    <div *ngIf="displayMode === DisplayMode.LARGE_CARDS">
+      <app-card [dataSource]="dataSource" (EventEmitted)="loadDocuments()"></app-card>
+    </div>
+
+    <!-- Table View -->
+    <div *ngIf="displayMode === DisplayMode.TABLE">
+      <app-table [dataSource]="dataSource" (EventEmitted)="loadDocuments()"></app-table>
+    </div>
+    <!--Small card View -->
+    <div *ngIf="displayMode === DisplayMode.SMALL_CARDS">
+      <app-small-card [dataSource]="dataSource" (EventEmitted)="loadDocuments()"></app-small-card>
+    </div>
+    <div *ngIf="!dataSource.data.length" class="text-xl text-gray-500 pl-1/2 pt-4">
+      no data found
+    </div>
+  </div>
 </div>

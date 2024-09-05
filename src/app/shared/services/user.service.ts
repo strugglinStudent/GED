@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from 'app/shared/models/user';
-import { map, Observable, ReplaySubject, tap } from 'rxjs';
+import { Observable, ReplaySubject, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { jwtDecode } from 'jwt-decode';
@@ -9,17 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 export class UserService {
   private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
   private apiUrl = `${environment.api}/users`;
-
-  // Helper method to get HTTP options with Authorization header
-  private getHttpOptions() {
-    const token = localStorage.getItem('token'); // Assume the token is stored in local storage
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }),
-    };
-  }
+  private currentUser: User | null = null; // Local variable to store the user
 
   /**
    * Constructor
@@ -27,7 +17,11 @@ export class UserService {
   constructor(
     private _httpClient: HttpClient,
     private _authService: AuthService,
-  ) {}
+  ) {
+    this.user$.subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -70,60 +64,40 @@ export class UserService {
     }
   }
 
-  /**
-   * Update the user
-   *
-   * @param user
-   */
-  update(user: User): Observable<any> {
-    const userId = this.getUserId();
-    if (userId) {
-      return this._httpClient.patch<User>(`${this.apiUrl}/${userId}`, user).pipe(
-        map((response) => {
-          this._user.next(response);
-        }),
-      );
-    }
-  }
-
   // CRUD functions
 
   addUser(user: User): Observable<User> {
-    return this._httpClient.post<User>(this.apiUrl, user, this.getHttpOptions());
+    return this._httpClient.post<User>(this.apiUrl, user);
   }
   getUsers(): Observable<User[]> {
-    return this._httpClient.get<User[]>(this.apiUrl, this.getHttpOptions());
+    return this._httpClient.get<User[]>(this.apiUrl);
   }
   updateUser(user: User): Observable<User> {
-    return this._httpClient.put<User>(`${this.apiUrl}/${user._id}`, user, this.getHttpOptions());
+    return this._httpClient.put<User>(`${this.apiUrl}/${user._id}`, user);
   }
 
   deleteUser(_id: string): Observable<void> {
-    return this._httpClient.delete<void>(`${this.apiUrl}/${_id}`, this.getHttpOptions());
+    return this._httpClient.delete<void>(`${this.apiUrl}/${_id}`);
   }
 
   updateAvatar(file: File): Observable<any> {
     const userId = this.getUserId(); // Get the user ID
     const formData = new FormData();
     formData.append('avatar', file, file.name);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    };
-    return this._httpClient.put(`${this.apiUrl}/${userId}/avatar`, formData, httpOptions);
+    return this._httpClient.put(`${this.apiUrl}/${userId}/avatar`, formData);
   }
 
   //check role:
-  isSuperAdmin(user: User): boolean {
-    return user.role === 'SuperAdmin';
+
+  isSuperAdmin(): boolean {
+    return this.currentUser?.role === 'SuperAdmin';
   }
 
-  isAdmin(user: User): boolean {
-    return user.role === 'Admin';
+  isAdmin(): boolean {
+    return this.currentUser?.role === 'Admin';
   }
 
-  isUser(user: User): boolean {
-    return user.role === 'User';
+  isUser(): boolean {
+    return this.currentUser?.role === 'User';
   }
 }

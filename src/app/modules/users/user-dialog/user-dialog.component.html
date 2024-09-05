@@ -43,7 +43,7 @@
           />
         </mat-form-field>
       </div>
-      <div class="flex flex-row mb-4" *ngIf="data.type === 'add'">
+      <div class="flex flex-row mb-4" *ngIf="data.type === 'add' || data.user.requestPasswordReset">
         <mat-form-field class="w-full mr-4">
           <mat-label>Password</mat-label>
           <input
@@ -52,7 +52,7 @@
             [(ngModel)]="data.user.password"
             name="password"
             #passwordInput="ngModel"
-            [attr.aria-pressed]="generateGenericPassword()"
+            (focusin)="generateGenericPassword()"
           />
           <mat-hint
             >Using generic password: userName_companyName_password. Can be changed later

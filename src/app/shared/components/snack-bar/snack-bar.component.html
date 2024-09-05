@@ -1,25 +1,20 @@
-<div class="snackbar-container">
+<div
+  class="absolute -top-0 -left-0 w-1.5 rounded-bl rounded-tl"
+  [ngStyle]="{ 'background-color': getSnackbarColor(), height: '68px' }"
+></div>
+<div class="snackbar-container flex-row">
   <div>
-    <mat-icon *ngIf="data.type === 'primary'">check</mat-icon>
-    <mat-icon *ngIf="data.type === 'accent'">info</mat-icon>
-    <mat-icon *ngIf="data.type === 'warn'">report_problem</mat-icon>
-    <mat-icon *ngIf="data.type === 'basic'"></mat-icon>
-    <mat-icon *ngIf="data.type === 'info'">info</mat-icon>
-    <mat-icon *ngIf="data.type === 'success'">check_circle</mat-icon>
-    <mat-icon *ngIf="data.type === 'warning'">warning</mat-icon>
-    <mat-icon *ngIf="data.type === 'error'">error</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'primary'">check</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'accent'">info</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'warn'">report_problem</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'basic'"></mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'info'">info</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'success'">check_circle</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'warning'">warning</mat-icon>
+    <mat-icon class="{{ data.type }}" *ngIf="data.type === 'error'">error</mat-icon>
   </div>
-  <span [ngClass]="data.type">{{ data.message }}</span>
-  <button
-    type="button"
-    class="ms-auto box-content rounded-none border-none p-1 text-black opacity-50 hover:no-underline hover:opacity-75 focus:shadow-none focus:outline-none dark:brightness-200 dark:grayscale dark:invert"
-    data-twe-alert-dismiss=""
-    aria-label="Close"
-  >
-    <span
-      class="w-[1em] focus:opacity-100 disabled:pointer-events-none disabled:select-none disabled:opacity-25 [&.disabled]:pointer-events-none [&.disabled]:select-none [&.disabled]:opacity-25"
-    >
-      <mat-icon>close</mat-icon>
-    </span>
-  </button>
+  <div class="flex flex-col">
+    <span class="font-bold" [ngClass]="data.type">{{ data.type }} !</span>
+    <span class="text-black">{{ data.message }}</span>
+  </div>
 </div>

@@ -1,0 +1,29 @@
+<ng-container *ngFor="let document of dataSource.data">
+  <mat-card class="document-card test2 m-2">
+    <div class="relative flex flex-row justify-between items-start">
+      <div class="relative h-52 w-48 -m-1 left-0">
+        <img
+          mat-card-image
+          class="h-full w-full object-cover rounded-lg rounded-r-none"
+          [src]="document.path"
+          alt="Document image"
+          (click)="openDocumentDialog(document)"
+        />
+      </div>
+      <div class="document-content">
+        <div class="flex flex-row justify-between">
+          <h3>{{ document.originalName }}</h3>
+          <app-document-action
+            class="-mt-3"
+            [document]="document"
+            (EventEmitted)="changeEmit()"
+          ></app-document-action>
+        </div>
+        <div>{{ document.content.toString() | slice: 0 : 300 }}...</div>
+        <div class="document-meta">
+          <span>Status: {{ document.status }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</ng-container>

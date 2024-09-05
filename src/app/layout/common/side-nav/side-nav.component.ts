@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UserSettingsComponent } from '../user-settings/user-settings.component';
 import { MatListItem, MatNavList } from '@angular/material/list';
@@ -6,10 +6,11 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { NgFor, NgIf } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { User } from 'app/shared/models/user';
 import { UserService } from '../../../shared/services/user.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatLine } from '@angular/material/core';
 
 @Component({
   selector: 'app-side-nav',
@@ -26,70 +27,89 @@ import { MatIconButton } from '@angular/material/button';
     NgIf,
     MatIcon,
     MatIconButton,
+    MatExpansionModule,
+    MatLine,
   ],
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
 })
-export class SideNavComponent implements OnInit {
+export class SideNavComponent {
   @Output() itemClicked = new EventEmitter<void>();
-
   onItemClicked() {
     this.itemClicked.emit();
   }
-  user: User;
+  constructor(private userService: UserService) {}
+
+  shouldDisplay(roles: string[]): boolean {
+    if (this.userService.isSuperAdmin() && roles.includes('SuperAdmin')) return true;
+    if (this.userService.isAdmin() && roles.includes('Admin')) return true;
+    return this.userService.isUser() && roles.includes('User');
+  }
+  // @ts-ignore
   navItems = [
     {
-      name: 'Company Dashboard',
-      link: '/company-dashboard',
-      roles: ['SuperAdmin'],
-      expanded: false,
-      children: [],
-    },
-    {
-      name: 'Users Dashboard',
-      link: '/users-dashboard',
+      name: 'users management',
       roles: ['Admin', 'SuperAdmin'],
-      expanded: false,
+      expandable: true,
+      expanded: true,
       children: [
         {
-          name: 'user groups',
-          link: '',
+          link: '/users-dashboard',
+          name: `users Dashboard`,
+          roles: ['Admin', 'SuperAdmin'],
+        },
+        {
+          name: 'workflow management',
+          link: '/workflow-management',
           roles: ['Admin'],
         },
         {
           name: 'user tasks',
-          link: '',
+          link: 'users-tasks',
+          roles: ['Admin'],
+        },
+      ],
+    },
+    {
+      name: 'Company Dashboard',
+      link: '/company-dashboard',
+      roles: ['SuperAdmin'],
+      expandable: false,
+    },
+
+    {
+      name: 'document Management',
+      expandable: true,
+      expanded: true,
+      roles: ['User', 'Admin'],
+      children: [
+        {
+          name: 'document Dashboard',
+          link: '/document-management',
+          roles: ['User', 'Admin'],
+        },
+        {
+          name: 'document content',
+          link: '/document-content',
+          roles: ['User', 'Admin'],
+        },
+        {
+          name: 'document distribution',
+          link: '/document-distribution',
+          roles: ['Admin'],
+        },
+        {
+          name: 'document archive',
+          link: '/archive',
           roles: ['Admin'],
         },
       ],
     },
 
     {
-      name: 'File Management',
-      link: '/file-management',
-      expanded: false,
-      children: [
-        {
-          name: 'Uploaded Files',
-          link: '/file-management/upload-files',
-          roles: ['User', 'Admin', 'SuperAdmin'],
-        },
-      ],
+      name: 'Setting',
+      link: '/profile',
       roles: ['User', 'Admin', 'SuperAdmin'],
     },
   ];
-  constructor(private userService: UserService) {}
-
-  ngOnInit(): void {
-    this.userService.user$.subscribe((user) => {
-      this.user = user;
-    });
-  }
-
-  shouldDisplay(roles: string[]): boolean {
-    if (!this.user) return false;
-    if (this.userService.isSuperAdmin(this.user) && roles.includes('SuperAdmin')) return true;
-    if (this.userService.isAdmin(this.user) && roles.includes('Admin')) return true;
-    return this.userService.isUser(this.user) && roles.includes('User');
-  }
 }

@@ -21,10 +21,14 @@ export class TokenInterceptor implements HttpInterceptor {
    * @param next
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this._authService.accessToken && !AuthUtils.isTokenExpired(this._authService.accessToken)) {
-      req = this.addToken(req);
+    if (!req.url.includes('api.groq.com') && !req.url.includes('api.mindee.net')) {
+      if (
+        this._authService.accessToken &&
+        !AuthUtils.isTokenExpired(this._authService.accessToken)
+      ) {
+        req = this.addToken(req);
+      }
     }
-
     // Response
     return next.handle(req).pipe(
       catchError((error) => {
@@ -36,12 +40,12 @@ export class TokenInterceptor implements HttpInterceptor {
       }),
     );
   }
-
   private addToken(request: HttpRequest<any>): HttpRequest<any> {
     return request.clone({
       headers: request.headers.set('Authorization', `Bearer ${this._authService.accessToken}`),
     });
   }
+
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Rafraîchir le token JWT
     return this._authService.refresh().pipe(

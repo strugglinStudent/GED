@@ -1,40 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatOption } from '@angular/material/autocomplete';
-import { MatSelect } from '@angular/material/select';
-import { NgForOf, NgIf } from '@angular/common';
-import { SharedModule } from '../../../shared/shared.module';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CompanyService } from '../../../shared/services/company.service';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
 import { Company } from '../../../shared/models/company';
 
 @Component({
   selector: 'app-company-dialog',
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatButton,
-    MatFormField,
-    MatHint,
-    MatInput,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    NgForOf,
-    NgIf,
-    SharedModule,
-    MatDialogActions,
-    MatDialogTitle,
-  ],
   templateUrl: './company-dialog.component.html',
   styleUrl: './company-dialog.component.scss',
 })

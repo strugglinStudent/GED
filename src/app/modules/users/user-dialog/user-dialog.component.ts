@@ -1,23 +1,14 @@
 import { Component, Inject } from '@angular/core';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Company } from '../../../shared/models/company';
 import { User } from '../../../shared/models/user';
 import { CompanyService } from '../../../shared/services/company.service';
 import { UserService } from '../../../shared/services/user.service';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
-import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-user-dialog',
   templateUrl: './user-dialog.component.html',
-  standalone: true,
-  imports: [SharedModule, MatDialogActions, MatDialogContent, MatDialogTitle],
   styleUrls: ['./user-dialog.component.scss'],
 })
 export class UserDialogComponent {
@@ -57,37 +48,29 @@ export class UserDialogComponent {
   }
   saveUser(): void {
     if (this.data.type === 'edit') {
-      this.userService.updateUser(this.data.user).subscribe(
-        () => {
-          this.dialogRef.close();
-          this.snackBar.openSnackBar('User updated successfully', 'success');
-        },
-        (error) => {
-          const errorMessage = error?.error || 'Update failed';
-          this.snackBar.openSnackBar(errorMessage, 'error');
-        },
-      );
+      console.log(this.data.user.password);
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { _id, email, password, userName } = this.data.user;
+      this.userService.updateUser({ _id, email, password, userName }).subscribe(() => {
+        this.dialogRef.close();
+        this.snackBar.openSnackBar('User updated successfully', 'success');
+      });
     } else {
-      this.userService.addUser(this.data.user).subscribe(
-        () => {
-          this.dialogRef.close();
-          this.snackBar.openSnackBar('User added successfully', 'success');
-        },
-        (error) => {
-          const errorMessage = error.error || 'Creation failed';
-          this.snackBar.openSnackBar(errorMessage, 'error');
-        },
-      );
+      this.userService.addUser(this.data.user).subscribe(() => {
+        this.dialogRef.close();
+        this.snackBar.openSnackBar('User added successfully', 'success');
+      });
     }
   }
 
   generateGenericPassword(): string {
-    if (this.data.type === 'add') {
-      if (this.data.user.userName && this.data.user.companyName) {
-        return (this.data.user.password = `${this.data.user.userName}_${this.data.user.companyName}_Password1*`);
-      }
-      if (this.data.user.userName && !this.data.isSuperAdmin)
-        return (this.data.user.password = `${this.data.user.userName}_${this.data.companyName}_Password1*`);
-    }
+    //return (this.data.user.password = `${this.data.user.userName}_${this.data.user.companyName}_Password1*`);
+    const specialCharset = '!@#]{$;<:%^&*(_+}|,>[?.)';
+    let x = Math.floor(Math.random() * specialCharset.length) + 1;
+    return (this.data.user.password = (
+      specialCharset.slice(x, x + Math.floor(Math.random() * 5)) +
+      Math.random().toString(36).slice(4) +
+      Math.random().toString(36).toUpperCase().slice(4)
+    ).slice(0, 16));
   }
 }

@@ -1,6 +1,7 @@
-<mat-card
+<div
   *ngIf="progressInfos.length && !hideAllCards"
-  class="p-1 mb-2 fixed bottom-0 right-0 w-80 h-fit bg-transparent"
+  class="fixed bottom-0.5 right-0.5 h-fit bg-transparent z-49"
+  style="{ width: 310px }"
 >
   <button
     mat-stroked-button
@@ -11,13 +12,9 @@
   >
     Hide documents done
   </button>
-  <div style="overflow-y: scroll; max-height: calc(100vh - 100px)">
+  <div class="overflow-y-auto p-1 m-1">
     <div *ngFor="let info of progressInfos; let i = index">
-      <div class="mt-4 w-72 bg-gray-100 h-24 rounded-lg border border-blue-950">
-        <div
-          class="absolute bg-blue-300 rounded-lg h-23"
-          [style.width.%]="progress(info.loadSize, info.file.size)"
-        ></div>
+      <div class="mt-2 w-72 bg-gray-100 h-24 rounded-lg border border-blue-950">
         <div class="relative flex flex-row justify-between">
           <div class="relative h-23 w-12">
             <img
@@ -25,6 +22,7 @@
               [src]="url(info.file)"
               alt="File Image"
             />
+
             <div
               class="absolute inset-0 bg-gradient-to-l from-gray-100 to-transparent rounded-lg rounded-r-none"
             ></div>
@@ -37,6 +35,10 @@
               *ngIf="info.status === 'uploading'"
               class="relative ml-2 text-xs text-nowrap flex flex-col items-start"
             >
+              <mat-progress-bar
+                mode="determinate"
+                value="progress(info.loadSize, info.file.size)"
+              ></mat-progress-bar>
               <span class="block"
                 >Size: {{ info.loadSize | fileSize }}/{{ info.file.size | fileSize }}</span
               >
@@ -44,9 +46,10 @@
             </div>
             <div
               *ngIf="info.status !== 'uploading' && info.status !== 'success'"
-              class="relative ml-2 text-xs text-nowrap flex flex-col items-start"
+              class="relative ml-2 mb-2 text-xs text-nowrap flex flex-col items-start justify-between"
             >
-              <span class="block">{{ info.status }}</span>
+              <mat-progress-bar class="relative mb-2" mode="buffer"></mat-progress-bar>
+              <span class="block">{{ info.status }}...</span>
             </div>
 
             <button
@@ -59,19 +62,15 @@
               Open Document
             </button>
           </div>
-          <button
-            *ngIf="info.status !== 'uploading'"
-            mat-icon-button
-            (click)="closeFile(info.file)"
-          >
+          <button mat-icon-button (click)="closeFile(info.file)">
             <mat-icon>close</mat-icon>
-            {{ setAutoCloseTimeout(info.file) }}
+            {{ setAutoCloseTimeout(info) }}
           </button>
         </div>
       </div>
     </div>
   </div>
-</mat-card>
+</div>
 
 <button
   *ngIf="hideAllCards"

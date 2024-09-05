@@ -19,12 +19,18 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxScannerQrcodeModule, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardHeader,
+  MatCardImage,
+  MatCardTitle,
+} from '@angular/material/card';
 import { FileSizePipe } from 'app/shared/pipes/file-size.pipe';
 import { TruncateNamePipe } from '../../shared/pipes/truncate-name.pipe';
-import { DocumentUploadComponent } from '../document/Document-upload/document-upload.component';
 import { DocumentDashboardComponent } from '../document/document-dashboard/document-dashboard.component';
-
+import { MatExpansionModule } from '@angular/material/expansion';
+import { DocumentModule } from '../document/document.module';
 LOAD_WASM().subscribe();
 @NgModule({
   declarations: [ExplorerComponent, ScrollableDirective],
@@ -56,8 +62,9 @@ LOAD_WASM().subscribe();
     SharedModule,
     FileSizePipe,
     TruncateNamePipe,
-    DocumentUploadComponent,
-    DocumentDashboardComponent,
+    MatExpansionModule,
+    MatCardImage,
+    DocumentModule,
   ],
   exports: [],
 })

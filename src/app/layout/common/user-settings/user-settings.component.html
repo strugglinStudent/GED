@@ -1,20 +1,24 @@
 <!-- user-settings.component.html -->
 <!-- Button -->
 <button mat-icon-button [matMenuTriggerFor]="userActions">
-  <span class="relative">
-    <mat-icon *ngIf="!user.avatar" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-    <img *ngIf="user.avatar" class="w-7 h-7 rounded-full" [src]="user.avatar" alt="avatar" />
+  <div class="relative pt-1.5">
+    <mat-icon
+      *ngIf="!user?.avatar"
+      class="rounded-full"
+      [svgIcon]="'heroicons_outline:user-circle'"
+    ></mat-icon>
+    <img *ngIf="user?.avatar" class="w-7 h-7 rounded-full" [src]="user?.avatar" alt="avatar" />
     <span
-      class="absolute right-0 bottom-0 w-2 h-2 rounded-full"
+      class="absolute right-0 bottom-0.5 w-2 h-2 rounded-full"
       [ngClass]="{
-        'mr-px mb-px': !showAvatar || !user.avatar,
-        'bg-green-500': user.status === 'online',
-        'bg-amber-500': user.status === 'away',
-        'bg-red-500': user.status === 'busy',
-        'bg-gray-400': user.status === 'not-visible'
+        'mr-px mb-px': !showAvatar || !user?.avatar,
+        'bg-green-500': user?.status === 'online',
+        'bg-amber-500': user?.status === 'away',
+        'bg-red-500': user?.status === 'offline',
+        'bg-gray-400': user?.status === 'not-visible'
       }"
     ></span>
-  </span>
+  </div>
 </button>
 
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
@@ -25,36 +29,21 @@
     </span>
   </button>
   <mat-divider class="my-2"></mat-divider>
-  <button mat-menu-item>
-    <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-    <span>Profile</span>
-  </button>
-  <button mat-menu-item>
+
+  <button mat-menu-item (click)="navigateToProfile()">
     <mat-icon [svgIcon]="'heroicons_outline:cog-8-tooth'"></mat-icon>
-    <span>Settings</span>
+    <span>Profile</span>
   </button>
   <button mat-menu-item [matMenuTriggerFor]="userStatus">
     <mat-icon [svgIcon]="'heroicons_outline:ellipsis-horizontal-circle'"></mat-icon>
     <span>Status</span>
   </button>
-  <button mat-menu-item [matMenuTriggerFor]="avatarMenu">
-    <mat-icon [svgIcon]="'heroicons_outline:camera'"></mat-icon>
-    <span>Update Avatar</span>
-  </button>
+
   <mat-divider class="my-2"></mat-divider>
   <button mat-menu-item (click)="signOut()">
     <mat-icon [svgIcon]="'heroicons_outline:arrow-right-start-on-rectangle'"></mat-icon>
     <span>Sign out</span>
   </button>
-</mat-menu>
-
-<mat-menu #avatarMenu="matMenu">
-  <div class="avatar-upload" mat-menu-item>
-    <input type="file" (change)="onFileChange($event)" accept="image/*" />
-    <button mat-raised-button color="primary" (click)="updateAvatar()" [disabled]="!selectedFile">
-      Update Avatar
-    </button>
-  </div>
 </mat-menu>
 
 <mat-menu class="user-status-menu" #userStatus="matMenu">
@@ -66,7 +55,7 @@
     <span class="w-4 h-4 mr-3 rounded-full bg-amber-500"></span>
     <span>Away</span>
   </button>
-  <button mat-menu-item (click)="updateUserStatus('busy')">
+  <button mat-menu-item (click)="updateUserStatus('offline')">
     <span class="w-4 h-4 mr-3 rounded-full bg-red-500"></span>
     <span>Busy</span>
   </button>

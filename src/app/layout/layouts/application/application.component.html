@@ -1,48 +1,49 @@
-<div class="z-1 w-screen absolute">
-  <mat-toolbar color="primary" class="relative z-1 w-screen flex items-center">
-    <div class="flex items-center">
-      <button mat-icon-button (click)="snav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <div class="text-2xl">
-        <a
-          [routerLink]="['/explorer']"
-          class="no-underline text-white hover:text-3xl visited:text-white"
-          >{{ user?.companyName }}</a
-        >
+<mat-sidenav-container class="w-screen h-screen z-1">
+  <mat-sidenav-content class="min-w-0">
+    <mat-toolbar class="absolute w-full border-1 pl-2 z-49 justify-between flex flex-1">
+      <div class="items-center">
+        <button mat-icon-button (click)="snav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <button [routerLink]="['/explorer']" class="text-3xl capitalize text-primary">
+          <b>GED/</b>{{ user?.companyName }}
+        </button>
       </div>
-    </div>
-    <div class="flex-1 flex"></div>
 
-    <div class="flex items-center">
-      <div class="flex-1 flex justify-center">
-        <app-search [appearance]="'bar'"></app-search>
-      </div>
-      <div class="flex flex-col text-right mr-4">
-        <div
-          class="whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current opacity-80"
-        >
-          {{ user?.userName }}
-        </div>
-        <div
-          class="mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50"
-        >
-          {{ user?.role }}
-        </div>
-      </div>
-      <app-user-settings></app-user-settings>
-    </div>
-  </mat-toolbar>
+      <div class="flex items-center">
+        <mat-form-field appearance="outline" class="flex flex-col text-right mt-5 mr-4">
+          <mat-label>Search</mat-label>
+          <input matInput placeholder="Search..." (keyup.enter)="onSearch($event)" />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
 
-  <mat-sidenav-container class="w-fit">
-    <mat-sidenav #snav [mode]="'over'" role="navigation">
-      <mat-nav-list>
-        <app-side-nav (itemClicked)="snav.close()"></app-side-nav>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content class="overflow-auto w-fit flex flex-col flex-auto">
-      <!-- Content -->
+        <div
+          class="flex flex-col text-right mr-4 whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current"
+        >
+          <span class="opacity-80">{{ user?.userName }} </span>
+          <span class="mt-0.5 text-sm opacity-50">{{ user?.role }}</span>
+        </div>
+
+        <app-notifications></app-notifications>
+        <app-user-settings></app-user-settings>
+      </div>
+    </mat-toolbar>
+    <!-- Content -->
+    <div class="relative flex flex-col top-15 justify-between content-area">
       <router-outlet *ngIf="true"></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+    </div>
+  </mat-sidenav-content>
+  <mat-sidenav class="w-1/5 bg-primary z-1 h-full" #snav [mode]="'side'" role="navigation" opened>
+    <mat-nav-list>
+      <div class="pl-1/4 pr-1/4 items-center mt-4 mb-4 w-fit">
+        <img
+          [routerLink]="['/explorer']"
+          src="assets/images/logo/logo.png"
+          class="border-2 border-white/50 rounded-full"
+          alt="Main logo"
+        />
+      </div>
+      <app-side-nav></app-side-nav>
+    </mat-nav-list>
+  </mat-sidenav>
+</mat-sidenav-container>

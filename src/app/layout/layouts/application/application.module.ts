@@ -11,7 +11,13 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { UserSettingsComponent } from '../../common/user-settings/user-settings.component';
 import { MatNavList } from '@angular/material/list';
 import { SideNavComponent } from '../../common/side-nav/side-nav.component';
-import { SearchComponent } from '../../common/search/search.component';
+import { NotificationsComponent } from '../../common/notifications/notifications.component';
+import { DocumentModule } from '../../../modules/document/document.module';
+import { CompanyModule } from '../../../modules/company/company.module';
+import { UsersModule } from '../../../modules/users/users.module';
+import { UserGroupModule } from '../../../modules/user-group/user-group.module';
+import { ExplorerModule } from '../../../modules/explorer/explorer.module';
+import { WorkflowModule } from '../../../modules/workflow/workflow.module';
 
 @NgModule({
   declarations: [ApplicationLayoutComponent],
@@ -27,7 +33,13 @@ import { SearchComponent } from '../../common/search/search.component';
     UserSettingsComponent,
     MatNavList,
     SideNavComponent,
-    SearchComponent,
+    NotificationsComponent,
+    CompanyModule,
+    UsersModule,
+    DocumentModule,
+    WorkflowModule,
+    UserGroupModule,
+    ExplorerModule,
   ],
   exports: [ApplicationLayoutComponent],
 })

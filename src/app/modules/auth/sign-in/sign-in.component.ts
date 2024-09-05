@@ -37,10 +37,10 @@ export class AuthSignInComponent implements OnInit {
           this.loading = false;
           this.authService.authenticationSubject.next(true);
           this.router.navigate(['/explorer']);
+          this._snackBar.openSnackBar('connected', 'success');
         },
-        error: (res) => {
+        error: () => {
           this.loading = false;
-          this._snackBar.openSnackBar(res?.message || 'verifier le mot de passe ou email', 'error');
         },
       });
     }

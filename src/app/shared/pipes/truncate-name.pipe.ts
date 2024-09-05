@@ -13,6 +13,6 @@ export class TruncateNamePipe implements PipeTransform {
     const truncatedName = fileName.substr(0, maxLength - 3) + '...';
     const fileParts = fileName.split('.');
     const extension = fileParts[fileParts.length - 1];
-    return truncatedName + '.' + extension;
+    return extension.length < 4 ? truncatedName + '.' + extension : truncatedName;
   }
 }

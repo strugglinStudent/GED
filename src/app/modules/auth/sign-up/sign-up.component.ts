@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { AuthService } from 'app/shared/services/auth.service';
 import { environment } from '../../../../environments/environment';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
-
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -41,10 +40,6 @@ export class SignUpComponent {
         },
         error: () => {
           this.loading = false;
-          this._snackBar.openSnackBar(
-            'An error occurred. Please verify your email or password.',
-            'error',
-          );
         },
       });
     }

@@ -1,0 +1,81 @@
+<div class="w-full h-full p-4">
+  <div class="mb-4">
+    <h2 *ngIf="!userGroupId" class="text-xl font-semibold">Add workflow</h2>
+    <h2 *ngIf="userGroupId" class="text-xl font-semibold">Edit workflow</h2>
+  </div>
+  <div>
+    <form [formGroup]="userGroupForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          required
+          class="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+        />
+        <mat-error *ngIf="userGroupForm.controls['name'].hasError('required')" class="text-red-600">
+          Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          class="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+        ></textarea>
+      </mat-form-field>
+
+      <div formArrayName="users" class="space-y-4">
+        <div
+          *ngFor="let user of users.controls; let i = index"
+          [formGroupName]="i"
+          class="grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>User</mat-label>
+            <mat-select
+              formControlName="userId"
+              placeholder="Select a user"
+              class="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            >
+              <mat-option *ngFor="let user of allUsers" [value]="user._id">
+                {{ user.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Permissions:</mat-label>
+            <mat-select
+              formControlName="permissions"
+              placeholder="Select permissions"
+              multiple
+              class="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            >
+              <mat-option *ngFor="let permission of permissions" [value]="permission">
+                {{ permission }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="flex flex-col items-center">
+            <mat-label>delete:</mat-label>
+            <button mat-icon-button (click)="removeUser(i)" aria-label="Remove User" class="p-4">
+              <mat-icon class="text-lg text-red-600 hover:text-red-800">remove_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-button (click)="addUser()" class="w-full">Add User</button>
+      </div>
+      <div class="flex justify-end space-x-2">
+        <button mat-button type="submit" class="bg-blue-500 text-white hover:bg-blue-600">
+          Save
+        </button>
+        <button mat-button (click)="onCancel()" class="bg-gray-200 hover:bg-gray-300">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

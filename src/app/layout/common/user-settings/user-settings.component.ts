@@ -38,13 +38,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
     private _router: Router,
-    private _userService: UserService,
+    protected _userService: UserService,
   ) {}
 
   ngOnInit(): void {
     this._userService.user$.pipe(takeUntil(this._unsubscribeAll)).subscribe((user: User) => {
       this.user = user;
-      this.updateUserStatus('online');
       this._changeDetectorRef.markForCheck();
     });
   }
@@ -55,33 +54,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   signOut(): void {
-    this.updateUserStatus('away');
+    this.updateUserStatus('offline');
     this._router.navigate(['sign-out']);
   }
 
-  onFileChange(event: any) {
-    if (event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
-    }
-  }
-
-  updateAvatar() {
-    if (this.selectedFile && this.user) {
-      this._userService.updateAvatar(this.selectedFile).subscribe(
-        (response: any) => {
-          console.log('Avatar updated successfully', response);
-          // Optionally refresh the user data
-          this._userService.get().subscribe((user: User) => {
-            this.user = user;
-            this._changeDetectorRef.markForCheck();
-          });
-        },
-        (error) => {
-          console.error('Error updating avatar', error);
-        },
-      );
-    }
-  }
   updateUserStatus(status: string): void {
     // Return if user is not available
     if (!this.user) {
@@ -91,5 +67,9 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     updatedUser.status = status;
     // Update the user
     this._userService.updateUser(updatedUser).subscribe((user) => (this.user = user));
+  }
+
+  navigateToProfile(): void {
+    this._router.navigate(['/profile']);
   }
 }

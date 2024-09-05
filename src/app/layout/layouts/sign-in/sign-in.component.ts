@@ -2,7 +2,7 @@ import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ActivatedRoute, ChildrenOutletContexts } from '@angular/router';
-import { routerAnimation } from '../../common/annimation/annimations';
+import { routerAnimation } from '../../common/animation/animations';
 import { EventData } from './data';
 
 @Component({

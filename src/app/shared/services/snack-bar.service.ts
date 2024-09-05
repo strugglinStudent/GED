@@ -20,7 +20,7 @@ export class SnackBarService {
     verticalPosition: MatSnackBarVerticalPosition = this.window.innerWidth >= 600
       ? 'top'
       : 'bottom',
-    durationInSeconds: number = 3,
+    durationInSeconds: number = 5,
   ): void {
     this.snackBar.openFromComponent(SnackBarComponent, {
       data: { message, type },

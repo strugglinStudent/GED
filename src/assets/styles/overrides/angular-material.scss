@@ -304,7 +304,6 @@
 .mat-button-toggle-group {
   width: 100% !important;
   border: none !important;
-  border-radius: 50px !important;
   @apply space-x-1;
   &.mat-button-toggle-group-appearance-standard {
     .mat-button-toggle + .mat-button-toggle {
@@ -317,17 +316,16 @@
     font-weight: 500;
     width: 50%;
     margin: 0 !important;
-    background: linear-gradient(var(--ged-grey) 1.02%, var(--ged-white) 100%) !important;
+    background: rgba(255, 255, 255, 0) !important;
+
     .dark & {
-    background:    linear-gradient(180deg, var(--ged-third) 0%, var(--ged-primary) 100%) !important;
     }
     &.mat-button-toggle-checked {
-      background: linear-gradient(var(--ged-orange) 1.02%, var(--ged-red) 100%) !important;
+      background: rgba(255, 255, 255, 0.1) !important;
 
       .mat-button-toggle-label-content {
-
-        @apply text-default #{'!important'};
-      }
+        @apply text-primary;
+       }
     }
     .mat-button-toggle-label-content {
       padding: 0 20px;

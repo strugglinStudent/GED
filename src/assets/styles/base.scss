@@ -136,6 +136,10 @@ a {
 .w-15 {
   width: 3.75rem !important;
 }
+
+.w-content{
+  width:  calc(100vw - 257px) !important;
+}
 .h-15 {
   height: 3.75rem !important;
 }
@@ -203,6 +207,10 @@ a {
 .h-screen-75 {
   height: calc(100vh - 75px - var(--safe-area-inset-top) - var(--app-margin-pub)) !important;
 }
+.h-content {
+  height: calc(100vh - 64px) !important;
+}
+
 .h-map-explorer {
   height: calc(100vh - 5px - 5rem - 5.5rem - var(--safe-area-inset-top) - var(--app-margin-pub)) !important;
 }
