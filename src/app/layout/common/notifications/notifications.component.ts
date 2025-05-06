@@ -42,7 +42,7 @@ import { MatBadge } from '@angular/material/badge';
     MatBadge,
   ],
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent {
   @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
   @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
@@ -66,8 +66,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   // -----------------------------------------------------------------------------------------------------
 
   /**
-   * On init
-   */
+
   ngOnInit(): void {
     // Subscribe to notification changes
     this._notificationsService.notifications$
@@ -84,9 +83,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * On destroy
-   */
+  //On destroy
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
@@ -102,9 +100,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
 
-  /**
-   * Open the notifications panel
-   */
+  // Open the notifications panel
+
   openPanel(): void {
     // Return if the notifications panel or its origin is not defined
     if (!this._notificationsPanel || !this._notificationsOrigin) {
@@ -120,24 +117,19 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
   }
 
-  /**
-   * Close the notifications panel
-   */
+  // Close the notifications panel
   closePanel(): void {
     this._overlayRef.detach();
   }
 
-  /**
-   * Mark all notifications as read
-   */
+  //Mark all notifications as read
   markAllAsRead(): void {
     // Mark all as read
     this._notificationsService.markAllAsRead().subscribe();
   }
 
-  /**
-   * Toggle read status of the given notification
-   */
+  //Toggle read status of the given notification
+
   toggleRead(notification: Notification): void {
     // Toggle the read status
     notification.read = !notification.read;
@@ -146,9 +138,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this._notificationsService.update(notification.id, notification).subscribe();
   }
 
-  /**
-   * Delete the given notification
-   */
+  //Delete the given notification
   delete(notification: Notification): void {
     // Delete the notification
     this._notificationsService.delete(notification.id).subscribe();
@@ -159,7 +149,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    *
    * @param index
    * @param item
-   */
+   // * /
   trackByFn(index: number, item: any): any {
     return item.id || index;
   }
@@ -168,9 +158,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   // @ Private methods
   // -----------------------------------------------------------------------------------------------------
 
-  /**
-   * Create the overlay
-   */
+  //Create the overlay
   private _createOverlay(): void {
     // Create the overlay
     this._overlayRef = this._overlay.create({
@@ -216,11 +204,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Calculate the unread count
-   *
-   * @private
-   */
+
   private _calculateUnreadCount(): void {
     let count = 0;
 
@@ -230,4 +214,5 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
     this.unreadCount = count;
   }
+*/
 }

@@ -20,7 +20,6 @@ class Users {
 @Component({
   selector: 'app-user-group-edit',
   templateUrl: './user-group-edit.component.html',
-  styleUrl: './user-group-edit.component.scss',
 })
 export class UserGroupEditComponent implements OnInit, OnChanges {
   userGroupForm: FormGroup;
