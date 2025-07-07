@@ -10,7 +10,10 @@ export interface Document {
   content?: Content;
   status?: 'pending' | 'validated' | 'approved' | 'rejected' | 'archived';
   statusLog?: {
-    userId?: string;
+    userId?: {
+      userName: string;
+      _id: string;
+    };
     changeDate?: Date;
     changeType?: 'upload' | 'approve' | 'validate' | 'reject' | 'archive' | 'delete' | 'edit';
   }[];
